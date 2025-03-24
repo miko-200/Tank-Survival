@@ -36,10 +36,10 @@ public class Projectile : MonoBehaviour
     {
         Debug.Log("Trigger entered with: " + other.gameObject.name);
 
-        if (other.gameObject.GetComponent<Damagable>())
+        if (other.gameObject.GetComponent<Enemy>())
         {
             Debug.Log("Damaging enemy: " + other.gameObject.name);
-            other.gameObject.GetComponent<Damagable>().Damage(damage);
+            other.gameObject.GetComponent<Enemy>().Damage(damage);
             Destroy(gameObject);  // Destroy the projectile on trigger hit
         }
     }

@@ -5,12 +5,15 @@ using UnityEngine;
 
 public class Tower : MonoBehaviour
 {
-    public float speed;
     public GameObject rotator;
-    public List<GameObject> _enemies = new();
+    public float speed = 15f;
+    public float damageMultipier = 1f;
+    public float range = 3f;
+    [HideInInspector]public List<GameObject> _enemies = new();
 
     //private GameObject enemy;
     private Rigidbody2D _rb;
+    private CircleCollider2D _col;
     private Vector2 _input;
     private List<GameObject> _projectiles = new();
 
@@ -19,6 +22,8 @@ public class Tower : MonoBehaviour
     private void Start()
     {
         _rb = this.gameObject.GetComponent<Rigidbody2D>();
+        _col = this.gameObject.GetComponent<CircleCollider2D>();
+        _col.radius = range;
     }
 
     private void Update()
@@ -74,6 +79,7 @@ public class Tower : MonoBehaviour
         if (other.gameObject.CompareTag("Enemy") && _enemies.Contains(other.gameObject))
         {
             _enemies.Remove(other.gameObject);
+            GetComponentInChildren<Shooter>()._wait = true;
             Debug.Log("Enemy removed: " + other.gameObject.name);
         }
         if (other.gameObject.CompareTag("Projectile") && !_projectiles.Contains(other.gameObject))

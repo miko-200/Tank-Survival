@@ -8,18 +8,20 @@ public class Shooter : MonoBehaviour
     public GameObject projectile;
     public Transform shootpoint;
     public float timeBetweenShots = 1f;
+    public bool _wait = true;
+    
 
     private float _shotTimer;
     private bool _canShoot = true;
     private bool _isReseting;
-    private bool _isFacingRightDirection = false;
+    private float waitBeforeFirstShot = (float)0.02;
     private void Update()
     {
         Tower tower = GetComponentInParent<Tower>();
         if (tower._enemies.Count > 0 && _canShoot)
         {
-            Invoke(nameof(FacingRightDirection), (float)0.1);
-            if (_isFacingRightDirection)
+            Invoke(nameof(Wait), waitBeforeFirstShot);
+            if (!_wait)
             {
                 _canShoot = false;
                 GameObject g = Instantiate(projectile, shootpoint.position, shootpoint.rotation);
@@ -36,37 +38,9 @@ public class Shooter : MonoBehaviour
         }
     }
 
-    private void FacingRightDirection()
+    private void Wait()
     {
-        Tower tower = GetComponentInParent<Tower>();
-        if (tower == null)
-        {
-            Debug.LogError("Tower component is missing in the parent!");
-            return;
-        }
-        if (tower._enemies.Count > 0)
-        {
-            if (transform.parent == null)
-            {
-                Debug.LogError("This object doesn't have a parent!");
-                return;
-            }
-            if (transform.parent.parent == null)
-            {
-                Debug.LogError("This object doesn't have a parent parent!");
-                return;
-            }
-            Vector2 dirToEnemy = (Vector2)tower._enemies[0].transform.parent.parent.position - (Vector2)transform.parent.parent.position;
-            float angle = Mathf.Atan2(dirToEnemy.y, dirToEnemy.x) * Mathf.Rad2Deg - 90;
-            if (transform.parent.rotation == Quaternion.Euler(0, 0, angle))
-            {
-                _isFacingRightDirection = true;
-            }
-            else
-            {
-                _isFacingRightDirection = false;
-            }
-        }
+        _wait = false;
     }
     private void ResetShot()
     {
