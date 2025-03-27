@@ -8,7 +8,7 @@ public class Shooter : MonoBehaviour
     public GameObject projectile;
     public Transform shootpoint;
     public float timeBetweenShots = 1f;
-    public bool _wait = true;
+    [HideInInspector]public bool _wait = true;
     
 
     private float _shotTimer;

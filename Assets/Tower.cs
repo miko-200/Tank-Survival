@@ -16,6 +16,9 @@ public class Tower : MonoBehaviour
     private CircleCollider2D _col;
     private Vector2 _input;
     private List<GameObject> _projectiles = new();
+    [SerializeField] private Sprite[] towerAnimations;
+    private Sprite towerMovingAnimation;
+
 
     private GameObject _pickedUpWeapon;
 
@@ -24,6 +27,7 @@ public class Tower : MonoBehaviour
         _rb = this.gameObject.GetComponent<Rigidbody2D>();
         _col = this.gameObject.GetComponent<CircleCollider2D>();
         _col.radius = range;
+        towerMovingAnimation = this.gameObject.GetComponent<SpriteRenderer>().sprite;
     }
 
     private void Update()
@@ -53,6 +57,20 @@ public class Tower : MonoBehaviour
 
         _input.x = Input.GetAxisRaw("Horizontal");
         _input.y = Input.GetAxisRaw("Vertical");
+        
+        Vector2 direction = _rb.velocity.normalized;
+        if (direction != Vector2.zero) // Prevent unnecessary rotation when stationary
+        {
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg -90;
+            transform.rotation = Quaternion.Euler(0, 0, angle);
+        }
+
+        if (GetComponent<SpriteRenderer>().sprite == towerAnimations[0])
+        {
+            towerMovingAnimation = towerAnimations[1];
+        }
+        if (GetComponent<SpriteRenderer>().sprite == towerMovingAnimation)
+        GetComponent<SpriteRenderer>().sprite = towerMovingAnimation;
     }
 
     private void FixedUpdate()
