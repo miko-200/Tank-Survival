@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Enemy : MonoBehaviour
 {
@@ -10,7 +11,10 @@ public class Enemy : MonoBehaviour
     public float damage = 5.0f;
     public float health = 30f;
     
+    [SerializeField] private Sprite[] enemyAnimations;
     private Spawner spawner; // Store the reference
+    private Sprite enemyMovingAnimation;
+    private bool _changeEnemyAnimation = false;
 
     private void Start()
     {
@@ -22,6 +26,7 @@ public class Enemy : MonoBehaviour
             spawner = cameraMovement.GetComponentInChildren<Spawner>(); // Look for Spawner inside
         }
         target = GameObject.FindGameObjectWithTag("Player");
+        enemyMovingAnimation = GetComponentInChildren<SpriteRenderer>().sprite;
     }
 
     private void Update()
@@ -32,6 +37,33 @@ public class Enemy : MonoBehaviour
             float angle = Mathf.Atan2(dirToTarget.y, dirToTarget.x) * Mathf.Rad2Deg - 90;
             transform.rotation = Quaternion.Euler(0, 0, angle);
         }
+        
+        if (GetComponent<SpriteRenderer>().sprite == enemyAnimations[0] && _changeEnemyAnimation)
+        {
+            enemyMovingAnimation = enemyAnimations[1];
+            _changeEnemyAnimation = false;
+        }
+        else if (GetComponent<SpriteRenderer>().sprite == enemyAnimations[1] && _changeEnemyAnimation)
+        {
+            enemyMovingAnimation = enemyAnimations[2];
+            _changeEnemyAnimation = false;
+        }
+        else if (GetComponent<SpriteRenderer>().sprite == enemyAnimations[2] && _changeEnemyAnimation)
+        {
+            enemyMovingAnimation = enemyAnimations[0];
+            _changeEnemyAnimation = false;
+        }
+
+        if (enemyMovingAnimation != null)
+        {
+            GetComponent<SpriteRenderer>().sprite = enemyMovingAnimation;
+            Invoke(nameof(ChangeAnimation), 0.5f);
+        }
+    }
+    
+    private void ChangeAnimation()
+    {
+        _changeEnemyAnimation = true;
     }
 
     private void FixedUpdate()

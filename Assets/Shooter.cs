@@ -12,7 +12,7 @@ public class Shooter : MonoBehaviour
     
 
     private float _shotTimer;
-    private bool _canShoot = true;
+    private bool _canShoot = false;
     private bool _isReseting;
     private float waitBeforeFirstShot = (float)0.02;
     private void Update()

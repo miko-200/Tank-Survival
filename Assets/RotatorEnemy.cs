@@ -21,14 +21,5 @@ public class RotatorEnemy : MonoBehaviour
             transform.rotation = Quaternion.Euler(0, 0, angle);
         }
     }
-
-    private void FixedUpdate()
-    {
-        if (target != null)
-        {
-            Vector2 dirToTarget = (Vector2)target.transform.position - (Vector2)transform.position;
-            dirToTarget.Normalize(); // Normalize to make it a unit vector
-            GetComponent<Rigidbody2D>().velocity = dirToTarget * GetComponentInParent<Enemy>().speed;
-        }
-    }
+    
 }

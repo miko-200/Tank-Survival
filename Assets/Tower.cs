@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
@@ -9,6 +10,8 @@ public class Tower : MonoBehaviour
     public float speed = 15f;
     public float damageMultipier = 1f;
     public float range = 3f;
+    public float health = 30f;
+    public float bodyDamage = 10f;
     [HideInInspector]public List<GameObject> _enemies = new();
 
     //private GameObject enemy;
@@ -18,6 +21,7 @@ public class Tower : MonoBehaviour
     private List<GameObject> _projectiles = new();
     [SerializeField] private Sprite[] towerAnimations;
     private Sprite towerMovingAnimation;
+    private bool _changeTowerAnimation = true;
 
 
     private GameObject _pickedUpWeapon;
@@ -48,6 +52,7 @@ public class Tower : MonoBehaviour
             _pickedUpWeapon.GetComponent<WeaponScript>().isPickedUp = false;
             _pickedUpWeapon = null;
         }*/
+        
         if (_enemies.Count > 0)
         {
             Vector2 dirToEnemy = (Vector2)_enemies[0].transform.position - (Vector2)transform.position;
@@ -57,25 +62,70 @@ public class Tower : MonoBehaviour
 
         _input.x = Input.GetAxisRaw("Horizontal");
         _input.y = Input.GetAxisRaw("Vertical");
-        
-        Vector2 direction = _rb.velocity.normalized;
-        if (direction != Vector2.zero) // Prevent unnecessary rotation when stationary
-        {
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg -90;
-            transform.rotation = Quaternion.Euler(0, 0, angle);
-        }
 
-        if (GetComponent<SpriteRenderer>().sprite == towerAnimations[0])
+        Vector2 direction = _rb.velocity.normalized;
+
+        if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
         {
-            towerMovingAnimation = towerAnimations[1];
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90;
+            transform.rotation = Quaternion.Euler(0, 0, angle);
+            
+            if (GetComponent<SpriteRenderer>().sprite == towerAnimations[0] && _changeTowerAnimation)
+            {
+                towerMovingAnimation = towerAnimations[1];
+                _changeTowerAnimation = false;
+            }
+            else if (GetComponent<SpriteRenderer>().sprite == towerAnimations[1] && _changeTowerAnimation)
+            {
+                towerMovingAnimation = towerAnimations[2];
+                _changeTowerAnimation = false;
+            }
+            else if (GetComponent<SpriteRenderer>().sprite == towerAnimations[2] && _changeTowerAnimation)
+            {
+                towerMovingAnimation = towerAnimations[0];
+                _changeTowerAnimation = false;
+            }
+
+            if (towerMovingAnimation != null)
+            {
+                GetComponent<SpriteRenderer>().sprite = towerMovingAnimation;
+                Invoke(nameof(ChangeAnimation), 0.5f);
+            }
         }
-        if (GetComponent<SpriteRenderer>().sprite == towerMovingAnimation)
-        GetComponent<SpriteRenderer>().sprite = towerMovingAnimation;
     }
 
     private void FixedUpdate()
     {
+        if (_rb.velocity.magnitude < 0.1f)
+        {
+            _rb.velocity = Vector2.zero;
+        }
         _rb.AddForce(_input * speed);
+    }
+
+    private void ChangeAnimation()
+    {
+        _changeTowerAnimation = true;
+    }
+    
+    private void Damage(float damage)
+    {
+        health -= damage;
+        Debug.Log("Tower damaged, health: " + health);
+        if (health <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            //other.gameObject.GetComponent<Enemy>().transform.position -= 1;
+            other.gameObject.GetComponent<Enemy>().Damage(bodyDamage);
+            Damage(GetComponent<Enemy>().damage);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -91,7 +141,7 @@ public class Tower : MonoBehaviour
             Debug.Log("Projectile added: " + other.gameObject.name);
         }
     }
-
+    
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Enemy") && _enemies.Contains(other.gameObject))
