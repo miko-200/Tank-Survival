@@ -7,9 +7,9 @@ using Random = UnityEngine.Random;
 
 public class Projectile : MonoBehaviour
 {
+    public GameObject Player;
     public float speed = 10f;
     public float lifeTime = 2f;
-    public float damage = 10f;
 
     public void Init()
     {
@@ -18,6 +18,7 @@ public class Projectile : MonoBehaviour
     }
     private void Start()
     {
+        Player = GameObject.FindGameObjectWithTag("Player");
         GetComponent<Rigidbody2D>().velocity = transform.up * speed;
         //GetComponent<Rigidbody2D>().AddForce(transform.right * speed);
         
@@ -39,7 +40,7 @@ public class Projectile : MonoBehaviour
         if (other.gameObject.GetComponent<Enemy>())
         {
             Debug.Log("Damaging enemy: " + other.gameObject.name);
-            other.gameObject.GetComponent<Enemy>().Damage(damage);
+            other.gameObject.GetComponent<Enemy>().Damage(Player.GetComponent<Tower>().damage);
             Destroy(gameObject);  // Destroy the projectile on trigger hit
         }
     }

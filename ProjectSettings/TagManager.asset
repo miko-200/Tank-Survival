@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Enemy
   - Projectile
+  - Level
+  - Xp
+  - Shooter
   layers:
   - Default
   - TransparentFX

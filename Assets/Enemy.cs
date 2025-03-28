@@ -7,9 +7,12 @@ using UnityEngine.Rendering;
 public class Enemy : MonoBehaviour
 {
     public GameObject target;
+    public GameObject levelUi;
+    public GameObject xpUntilNextLevelUi;
     public float speed = 8.0f;
     public float damage = 5.0f;
-    public float health = 30f;
+    public float health = 10f;
+    public float xpAmount = 1f;
     
     [SerializeField] private Sprite[] enemyAnimations;
     private Spawner spawner; // Store the reference
@@ -26,6 +29,8 @@ public class Enemy : MonoBehaviour
             spawner = cameraMovement.GetComponentInChildren<Spawner>(); // Look for Spawner inside
         }
         target = GameObject.FindGameObjectWithTag("Player");
+        levelUi = GameObject.FindGameObjectWithTag("Level");
+        xpUntilNextLevelUi = GameObject.FindGameObjectWithTag("Xp");
         enemyMovingAnimation = GetComponentInChildren<SpriteRenderer>().sprite;
     }
 
@@ -84,6 +89,7 @@ public class Enemy : MonoBehaviour
         {
             spawner.spawnCount--;
             Debug.Log("Spawn count: " + spawner.spawnCount);
+            levelUi.GetComponent<Level>().xp += xpAmount;
             Destroy(gameObject);
         }
     }
