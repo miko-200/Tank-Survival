@@ -61,9 +61,12 @@ public class Tower : MonoBehaviour
 
             if (_enemies.Count > 0 && shooter.GetComponent<Shooter>()._automaticShooting)
             {
-                Vector2 dirToEnemy = (Vector2)_enemies[0].transform.position - (Vector2)transform.position;
-                float angle = Mathf.Atan2(dirToEnemy.y, dirToEnemy.x) * Mathf.Rad2Deg - 90;
-                rotator.transform.rotation = Quaternion.Euler(0, 0, angle);
+                if (_enemies[0] != null)
+                {
+                    Vector2 dirToEnemy = (Vector2)_enemies[0].transform.position - (Vector2)transform.position;
+                    float angle = Mathf.Atan2(dirToEnemy.y, dirToEnemy.x) * Mathf.Rad2Deg - 90;
+                    rotator.transform.rotation = Quaternion.Euler(0, 0, angle);
+                }
             }
             else if (shooter.GetComponent<Shooter>()._automaticShooting == false)
             {

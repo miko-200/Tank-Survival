@@ -9,6 +9,8 @@ TagManager:
   - Level
   - Xp
   - Shooter
+  - Spawner
+  - Timer
   layers:
   - Default
   - TransparentFX

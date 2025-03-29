@@ -14,12 +14,19 @@ public class Spawner : MonoBehaviour
     public int bulkSpawnCount = 5;
     public bool randomBulkSpawn = false;
     [HideInInspector]public int spawnCount = 0;
-  
+
+    private GameObject EnemyUpgrades;
     private Vector2 center;
     private float angle1 = 0f;
     private float angle2 = 360f;
     private Coroutine spawnRoutine;
-    
+
+
+    private void Start()
+    {
+        EnemyUpgrades = GameObject.FindGameObjectWithTag("Timer");
+        StartSpawning();
+    }
     private void BulkSpawn()
     {
         center = CenterObject.transform.position;
@@ -34,7 +41,11 @@ public class Spawner : MonoBehaviour
                 Mathf.Cos(angle * Mathf.Deg2Rad) * radius,
                 Mathf.Sin(angle * Mathf.Deg2Rad) * radius
             );
-            Instantiate(enemy, spawnPosition, Quaternion.identity);
+            GameObject newEnemy = Instantiate(enemy, spawnPosition, Quaternion.identity);
+            Enemy newEnemyScript = newEnemy.GetComponent<Enemy>();
+            newEnemyScript.xpAmount = EnemyUpgrades.GetComponent<Timer>().xpAmount;
+            newEnemyScript.health = EnemyUpgrades.GetComponent<Timer>().health;
+            newEnemyScript.damage = EnemyUpgrades.GetComponent<Timer>().damage;
             spawnCount++;
         }
     }
@@ -53,7 +64,11 @@ public class Spawner : MonoBehaviour
                 Mathf.Cos(angle * Mathf.Deg2Rad) * radius,
                 Mathf.Sin(angle * Mathf.Deg2Rad) * radius
             );
-            Instantiate(enemy, spawnPosition, Quaternion.identity);
+            GameObject newEnemy = Instantiate(enemy, spawnPosition, Quaternion.identity);
+            Enemy newEnemyScript = newEnemy.GetComponent<Enemy>();
+            newEnemyScript.xpAmount = EnemyUpgrades.GetComponent<Timer>().xpAmount;
+            newEnemyScript.health = EnemyUpgrades.GetComponent<Timer>().health;
+            newEnemyScript.damage = EnemyUpgrades.GetComponent<Timer>().damage;
             spawnCount++;
         }
     }
@@ -67,13 +82,12 @@ public class Spawner : MonoBehaviour
             Mathf.Cos(angle * Mathf.Deg2Rad) * radius,
             Mathf.Sin(angle * Mathf.Deg2Rad) * radius
         );
-        Instantiate(enemy, spawnPosition, Quaternion.identity);
+        GameObject newEnemy = Instantiate(enemy, spawnPosition, Quaternion.identity);
+        Enemy newEnemyScript = newEnemy.GetComponent<Enemy>();
+        newEnemyScript.xpAmount = EnemyUpgrades.GetComponent<Timer>().xpAmount;
+        newEnemyScript.health = EnemyUpgrades.GetComponent<Timer>().health;
+        newEnemyScript.damage = EnemyUpgrades.GetComponent<Timer>().damage;
         spawnCount++;
-    }
-
-    private void Start()
-    {
-        StartSpawning();
     }
 
     public void StartSpawning()
