@@ -19,6 +19,6 @@ public class XpUntilLevelUp : MonoBehaviour
     }
     public void Update()
     {
-        xpText.text = "Xp until level up: " + Mathf.Round(levelUi.GetComponent<Level>().xp) + "/" + Mathf.Round(levelUi.GetComponent<Level>().xpToNextLevel);
+        xpText.text = "Xp: " + Mathf.FloorToInt(levelUi.GetComponent<Level>().xp) + "/" + Mathf.FloorToInt(levelUi.GetComponent<Level>().xpToNextLevel);
     }
 }
