@@ -41,7 +41,7 @@ public class Timer : MonoBehaviour
             timerStartTime = Time.time;
         }
 
-        if (Mathf.Ceil(Time.time - timerStartTime) % 60 < 10)
+        if (Mathf.Ceil(Time.time - timerStartTime) < 10)
         {
             under10s = "0";
         }
