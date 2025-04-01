@@ -160,6 +160,7 @@ GameObject:
   - component: {fileID: 6988422185759203246}
   - component: {fileID: 5485193569308831071}
   - component: {fileID: 8127515416653283885}
+  - component: {fileID: 8791847839845042631}
   m_Layer: 0
   m_Name: Tower
   m_TagString: Player
@@ -311,7 +312,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotator: {fileID: 8258313565628327287}
-  shooter: {fileID: 0}
+  shooter: {fileID: 7883860580706588532}
   speed: 8
   range: 6
   health: 30
@@ -319,9 +320,9 @@ MonoBehaviour:
   bodyDamage: 10
   _enemies: []
   towerAnimations:
-  - {fileID: 895841118, guid: c9a21104d72328241951a74716e422ad, type: 3}
-  - {fileID: 130193866, guid: c9a21104d72328241951a74716e422ad, type: 3}
-  - {fileID: 1010885016, guid: c9a21104d72328241951a74716e422ad, type: 3}
+  - {fileID: 939578019, guid: ea55b54a5ee08324981d99f33fb8b457, type: 3}
+  - {fileID: -645201112, guid: ea55b54a5ee08324981d99f33fb8b457, type: 3}
+  - {fileID: -459918350, guid: ea55b54a5ee08324981d99f33fb8b457, type: 3}
 --- !u!61 &8127515416653283885
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -367,6 +368,31 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.1, y: 1.1}
   m_EdgeRadius: 0
+--- !u!114 &8791847839845042631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1239180976125049440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1528f4fdf8620047b671be490834c23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tankName: {fileID: 0}
+  bodyColorName: {fileID: 0}
+  rotatorColorName: {fileID: 0}
+  shellColorName: {fileID: 0}
+  imgBody: {fileID: 0}
+  imgRotator: {fileID: 0}
+  imgShell: {fileID: 0}
+  bodyRenderer: {fileID: 114483077532223600}
+  rotatorRenderer: {fileID: 4121113197186270098}
+  shellRenderer: {fileID: 3206372550257220265, guid: bd9fd7d9d930d4d4a84c5526229eebe9, type: 3}
+  shell: {fileID: 0}
+  _isEnemy: 0
+  _isChangeable: 0
 --- !u!1 &1865429458641563929
 GameObject:
   m_ObjectHideFlags: 0

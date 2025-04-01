@@ -12,9 +12,9 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: 9f68ca78444bef349a822f9bd62fccd0
   - enabled: 1
-    path: Assets/Scenes/Game.unity
-    guid: 3c547b5c6e2e6c74a910d67cc083dd3b
-  - enabled: 1
     path: Assets/Scenes/TankEditor.unity
     guid: 3a644c2321a07db40b38528dc572a898
+  - enabled: 1
+    path: Assets/Scenes/Game.unity
+    guid: 3c547b5c6e2e6c74a910d67cc083dd3b
   m_configObjects: {}
