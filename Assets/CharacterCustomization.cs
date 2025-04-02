@@ -26,7 +26,7 @@ public class CharacterCustomization : MonoBehaviour
     public bool _isEnemy = false;
     public bool _isChangeable = false;
 
-    private List<string> Colors = new List<string>() {"#0095FF","#FF0000", "#00FF00",  "#FFFF00", "#FFA500", "#9000FF", "#FF0FC6", "#FFFFFF", "#4D4D4D" };
+    private List<string> Colors = new List<string>() {"#0095FF","#FF0000", "#00FF00",  "#FFFF00", "#FFA500", "#9000FF", "#FF0FC6", "#FFFFFF", "#4D4D4D", "RGB" };
     public int bodyColor;
     public int enemyBodyColor;
     public int rotatorColor;
@@ -35,7 +35,7 @@ public class CharacterCustomization : MonoBehaviour
     public int enemyShellColor;
     public int trailColor;
     public int enemyTrailColor;
-    private List<string> ColorNames = new List<string>() { "Blue", "Red", "Green", "Yellow", "Orange", "Purple", "Pink", "White", "Black" };
+    private List<string> ColorNames = new List<string>() { "Blue", "Red", "Green", "Yellow", "Orange", "Purple", "Pink", "White", "Black", "RGB" };
 
 
     private void Start()
@@ -93,7 +93,12 @@ public class CharacterCustomization : MonoBehaviour
             ChangeColorName(bodyColorIndex, bodyColorName);
             ChangeColorName(rotatorColorIndex, rotatorColorName);
             ChangeColorName(shellColorIndex, shellColorName);
+        }
+
+        if (trailColorName != null)
+        {
             ChangeColorName(trailColorIndex, trailColorName);
+            Debug.Log("Trail color start changed");
         }
     }
 
@@ -195,9 +200,9 @@ public class CharacterCustomization : MonoBehaviour
         {
             //bool _isForward = false;
             int color = 0; // Temporary variable for color index
-            Image img = imgBody;
-            SpriteRenderer rend = bodyRenderer;
-            TextMeshProUGUI text = bodyColorName;
+            Image img = null;
+            SpriteRenderer rend = null;
+            TextMeshProUGUI text = null;
 
             // Determine which part is being changed
             if (part == "body")
@@ -230,6 +235,7 @@ public class CharacterCustomization : MonoBehaviour
             }
             else if (part == "shell")
             {
+                Debug.Log("Shell button pressed");
                 if (_isEnemy)
                 {
                     color = enemyShellColor;
@@ -244,6 +250,7 @@ public class CharacterCustomization : MonoBehaviour
             }
             else if (part == "trail")
             {
+                Debug.Log("Trail button pressed");
                 if (_isEnemy)
                 {
                     color = enemyTrailColor;
@@ -252,13 +259,13 @@ public class CharacterCustomization : MonoBehaviour
                 {
                     color = trailColor;
                 }
-                text = shellColorName;
+                text = trailColorName;
             }
 
             // Cycle colors forward or backward
             if (_isForward)
             {
-                if (color == Colors.Count - 1)
+                if ((color == Colors.Count - 2 && part != "trail") || color == Colors.Count - 1)
                 {
                     color = 0;
                 }
@@ -269,7 +276,11 @@ public class CharacterCustomization : MonoBehaviour
             }
             else
             {
-                if (color == 0)
+                if (color == 0 && part != "trail")
+                {
+                    color = Colors.Count - 2;
+                }
+                else if (part == "trail" && color == 0)
                 {
                     color = Colors.Count - 1;
                 }
@@ -285,10 +296,11 @@ public class CharacterCustomization : MonoBehaviour
                 ColorManager.Instance.ChangeColorRend(color, rend);
                 ColorManager.Instance.ChangeColorImg(color, img);
             }
-
+            
             if (text != null)
             {
                 ChangeColorName(color, text);
+                Debug.Log(part + " color text name changed."); 
             }
 
             if (!_isEnemy){// Update the stored color index

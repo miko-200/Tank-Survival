@@ -1435,7 +1435,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1503977150}
         m_TargetAssemblyTypeName: CharacterCustomization, Assembly-CSharp
-        m_MethodName: ChangeShellColorBackward
+        m_MethodName: ChangeTrailColorBackward
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1447,7 +1447,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1852536921}
         m_TargetAssemblyTypeName: CharacterCustomization, Assembly-CSharp
-        m_MethodName: ChangeShellColorBackward
+        m_MethodName: ChangeTrailColorBackward
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4087,6 +4087,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1191640637}
     - target: {fileID: 1330793576385733048, guid: d93f722679adc9945a039c50e4c9fe6a, type: 3}
+      propertyPath: trailColorName
+      value: 
+      objectReference: {fileID: 842198994}
+    - target: {fileID: 1330793576385733048, guid: d93f722679adc9945a039c50e4c9fe6a, type: 3}
       propertyPath: rotatorRenderer
       value: 
       objectReference: {fileID: 1849558450}
@@ -5046,7 +5050,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1503977150}
         m_TargetAssemblyTypeName: CharacterCustomization, Assembly-CSharp
-        m_MethodName: ChangeShellColorForward
+        m_MethodName: ChangeTrailColorForward
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5058,7 +5062,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1852536921}
         m_TargetAssemblyTypeName: CharacterCustomization, Assembly-CSharp
-        m_MethodName: ChangeShellColorForward
+        m_MethodName: ChangeTrailColorForward
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6867,6 +6871,10 @@ PrefabInstance:
       propertyPath: shellColorName
       value: 
       objectReference: {fileID: 1191640637}
+    - target: {fileID: 1330793576385733048, guid: d93f722679adc9945a039c50e4c9fe6a, type: 3}
+      propertyPath: trailColorName
+      value: 
+      objectReference: {fileID: 842198994}
     - target: {fileID: 1330793576385733048, guid: d93f722679adc9945a039c50e4c9fe6a, type: 3}
       propertyPath: rotatorRenderer
       value: 

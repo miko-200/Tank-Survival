@@ -18,8 +18,9 @@ public class ColorCustomization : MonoBehaviour
     public SpriteRenderer rotatorRenderer;
     public SpriteRenderer shellRenderer;
     public TrailRenderer trailRenderer;
+    public Material trailMaterial;
     
-    private List<string> Colors = new List<string>() {"#0095FF","#FF0000", "#00FF00",  "#FFFF00", "#FFA500", "#9000FF", "#FF0FC6", "#FFFFFF", "#4D4D4D" };
+    private List<string> Colors = new List<string>() {"#0095FF","#FF0000", "#00FF00",  "#FFFF00", "#FFA500", "#9000FF", "#FF0FC6", "#FFFFFF", "#4D4D4D", "RGB" };
     public int bodyColor;
     public int enemyBodyColor;
     public int rotatorColor;
@@ -28,7 +29,7 @@ public class ColorCustomization : MonoBehaviour
     public int enemyShellColor;
     public int trailColor;
     public int enemyTrailColor;
-    private List<string> ColorNames = new List<string>() { "Blue", "Red", "Green", "Yellow", "Orange", "Purple", "Pink", "White", "Black" };
+    private List<string> ColorNames = new List<string>() { "Blue", "Red", "Green", "Yellow", "Orange", "Purple", "Pink", "White", "Black", "RGB" };
     
     public bool _isEnemy = false;
 
@@ -95,7 +96,7 @@ public class ColorCustomization : MonoBehaviour
 
     private void ChangeColorTrail(int colorIndex, TrailRenderer trail)
     {
-        if (colorIndex >= 0 && colorIndex < Colors.Count)
+        if (colorIndex >= 0 && colorIndex < Colors.Count - 2)
         {
             string selectedColorHex = Colors[colorIndex];
             Color color;
@@ -106,11 +107,14 @@ public class ColorCustomization : MonoBehaviour
                 trail.material = new Material(Shader.Find("Sprites/Default"));
 
                 // A simple 2 color gradient with a fixed alpha of 1.0f.
-                float alpha = 1.0f;
                 Gradient gradient = new Gradient();
                 gradient.SetKeys(
                     new GradientColorKey[] { new GradientColorKey(color, 0.0f), new GradientColorKey(color, 1.0f) },
-                    new GradientAlphaKey[] { new GradientAlphaKey(alpha, 0.0f), new GradientAlphaKey(alpha, 1.0f) }
+                    new GradientAlphaKey[] {
+                        new GradientAlphaKey(1.0f, 0.0f), // Fully visible at start
+                        new GradientAlphaKey(0.6f, 0.4f), // Slight fade in the middle
+                        new GradientAlphaKey(0.3f, 0.7f),
+                        new GradientAlphaKey(0f, 1f)}
                 );
                 trail.colorGradient = gradient;
                 Debug.Log($"Color changed to {ColorNames[colorIndex]} ({selectedColorHex})");
@@ -119,6 +123,39 @@ public class ColorCustomization : MonoBehaviour
             {
                 Debug.LogWarning("Invalid hex color string.");
             }
+        }
+        else if (colorIndex == Colors.Count - 1)
+        {
+            trail = GetComponent<TrailRenderer>();
+            if (trailMaterial != null)
+            {
+                trail.material = trailMaterial;
+            }
+            else
+            {
+                Debug.LogError("Trail Material is missing! Assign one in the Inspector.");
+            }
+            // A simple 2 color gradient with a fixed alpha of 1.0f.
+            Gradient gradient = new Gradient();
+            gradient.SetKeys(
+                new GradientColorKey[]
+                {
+                    new GradientColorKey(Color.red, 0.0f), // Start red
+                    new GradientColorKey(Color.yellow, 0.3f), // Mid yellow
+                    new GradientColorKey(Color.green, 0.5f), // Mid green
+                    new GradientColorKey(Color.blue, 0.7f),
+                    new GradientColorKey(Color.magenta, 1.0f) // End blue
+                },
+                new GradientAlphaKey[]
+                {
+                    new GradientAlphaKey(1.0f, 0.0f), // Fully visible at start
+                    new GradientAlphaKey(0.6f, 0.4f), // Slight fade in the middle
+                    new GradientAlphaKey(0.3f, 0.7f),
+                    new GradientAlphaKey(0f, 1f)// Fully transparent at the end
+                }
+            );
+            trail.colorGradient = gradient;
+            Debug.Log($"Color changed to {ColorNames[colorIndex]}");
         }
         else
         {

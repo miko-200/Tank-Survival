@@ -1944,6 +1944,8 @@ MonoBehaviour:
   enemyRotatorColor: 0
   shellColor: 0
   enemyShellColor: 0
+  trailColor: 0
+  enemyTrailColor: 0
   _isEnemy: 0
 --- !u!1 &797033683
 GameObject:
@@ -2776,6 +2778,8 @@ MonoBehaviour:
   enemyRotatorColor: 1
   shellColor: 0
   enemyShellColor: 1
+  trailColor: 0
+  enemyTrailColor: 1
 --- !u!4 &1549883606
 Transform:
   m_ObjectHideFlags: 0
