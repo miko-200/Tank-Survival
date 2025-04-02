@@ -29,23 +29,23 @@ public class Level : MonoBehaviour
             xp -= xpToNextLevel;
             if (level < 15)
             {
-                xpToNextLevel *= 1.2f;
+                xpToNextLevel *= 1.1f;
             } 
             else if (level < 20 && level >= 15)
             {
-                xpToNextLevel *= 1.4f;
+                xpToNextLevel *= 1.2f;
             } 
             else if (level < 30 && level >= 20)
             {
-                xpToNextLevel *= 1.6f;
+                xpToNextLevel *= 1.3f;
             } 
             else if (level < 45 && level >= 30)
             {
-                xpToNextLevel *= 1.8f;
+                xpToNextLevel *= 1.4f;
             }
             else
             {
-                xpToNextLevel *= 2f;
+                xpToNextLevel *= 1.5f;
             }
         }
     }
@@ -72,7 +72,7 @@ public class Level : MonoBehaviour
         {
             multiplier = 2.5f;
         }
-        Player.GetComponent<Tower>().OnLevelUp(multiplier);
+        Player.GetComponent<Tower>().OnLevelUp();
         LevelText.text = "Level: " + level;
     }
 }

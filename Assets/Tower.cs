@@ -9,10 +9,12 @@ public class Tower : MonoBehaviour
     public GameObject rotator;
     public GameObject shooter;
     public float speed = 15f;
-    public float range = 3f;
-    public float health = 30f;
-    public float damage = 5f;
-    public float bodyDamage = 10f;
+    public float range = 6f;
+    public float health = 10f;
+    private float healthRegen;
+    private bool _isRegenerating = false;
+    public float damage = 1f;
+    public float bodyDamage = 2f;
     [HideInInspector]public List<GameObject> _enemies = new();
 
     //private GameObject enemy;
@@ -29,6 +31,12 @@ public class Tower : MonoBehaviour
 
     private void Start()
     {
+        Multipliers multipliersScript = this.GetComponent<Multipliers>();
+        bodyDamage *= multipliersScript.damageMultiplier;
+        health *= multipliersScript.healthMultiplier;
+        healthRegen = multipliersScript.healthMultiplier;
+        damage *= multipliersScript.damageMultiplier;
+        speed *= multipliersScript.moveSpeedMultiplier;
         if (gameObject != null)
         {
             _rb = this.gameObject.GetComponent<Rigidbody2D>();
@@ -42,23 +50,11 @@ public class Tower : MonoBehaviour
     {
         if (gameObject != null)
         {
-            /*if (Input.GetKeyDown(KeyCode.E) && _enemies.Count > 0)
+            if (!_isRegenerating)
             {
-
-                _pickedUpWeapon = _enemies[0];
-                _pickedUpWeapon.GetComponent<WeaponScript>().isPickedUp = true;
-                _pickedUpWeapon.transform.parent = rotator.transform.GetChild(0).transform;
-                _pickedUpWeapon.transform.localPosition = new Vector3(0, 0, 0);
-                _pickedUpWeapon.transform.localEulerAngles = new Vector3(0, 0, 0);
+                _isRegenerating = true;
             }
-
-            if (Input.GetKeyDown(KeyCode.G) && _pickedUpWeapon != null)
-            {
-                _pickedUpWeapon.transform.parent = null;
-                _pickedUpWeapon.GetComponent<WeaponScript>().isPickedUp = false;
-                _pickedUpWeapon = null;
-            }*/
-
+            
             if (_enemies.Count > 0 && shooter.GetComponent<Shooter>()._automaticShooting)
             {
                 if (_enemies[0] != null)
@@ -112,6 +108,11 @@ public class Tower : MonoBehaviour
         }
     }
 
+    public void Regenerate()
+    {
+        health += healthRegen;
+        _isRegenerating = false;
+    }
     private void FixedUpdate()
     {
         if (gameObject != null)
@@ -146,13 +147,14 @@ public class Tower : MonoBehaviour
         }
     }
 
-    public void OnLevelUp(float multiplier)
+    public void OnLevelUp()
     {
-        bodyDamage *= multiplier;
-        health *= multiplier;
-        damage *= multiplier;
-        speed += 0.1f;
-        range += 0.1f;
+        Multipliers multipliersScript = this.GetComponent<Multipliers>();
+        bodyDamage *= multipliersScript.damageMultiplier;
+        health *= multipliersScript.healthMultiplier;
+        healthRegen = multipliersScript.healthMultiplier;
+        damage *= multipliersScript.damageMultiplier;
+        speed *= multipliersScript.moveSpeedMultiplier;
     } 
 
     private void OnCollisionEnter2D(Collision2D other)

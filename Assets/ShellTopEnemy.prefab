@@ -80,7 +80,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 3a477ce4247cefc41b9e0c4761c76912, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -265,12 +265,15 @@ MonoBehaviour:
   rotatorRenderer: {fileID: 0}
   shellRenderer: {fileID: 3206372550257220265}
   trailRenderer: {fileID: -6672349984822957854}
+  trailMaterial: {fileID: 0}
   bodyColor: 0
   enemyBodyColor: 0
   rotatorColor: 0
   enemyRotatorColor: 0
   shellColor: 0
   enemyShellColor: 0
+  trailColor: 0
+  enemyTrailColor: 0
   _isEnemy: 0
 --- !u!58 &5366890021827541551
 CircleCollider2D:

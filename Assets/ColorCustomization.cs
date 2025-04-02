@@ -96,7 +96,7 @@ public class ColorCustomization : MonoBehaviour
 
     private void ChangeColorTrail(int colorIndex, TrailRenderer trail)
     {
-        if (colorIndex >= 0 && colorIndex < Colors.Count - 2)
+        if (colorIndex >= 0 && colorIndex < Colors.Count-1)
         {
             string selectedColorHex = Colors[colorIndex];
             Color color;
@@ -124,7 +124,7 @@ public class ColorCustomization : MonoBehaviour
                 Debug.LogWarning("Invalid hex color string.");
             }
         }
-        else if (colorIndex == Colors.Count - 1)
+        else if (colorIndex == Colors.Count-1)
         {
             trail = GetComponent<TrailRenderer>();
             if (trailMaterial != null)

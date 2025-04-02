@@ -161,6 +161,7 @@ GameObject:
   - component: {fileID: 5485193569308831071}
   - component: {fileID: 8127515416653283885}
   - component: {fileID: 8791847839845042631}
+  - component: {fileID: 6122821950039849415}
   m_Layer: 0
   m_Name: Tower
   m_TagString: Player
@@ -315,9 +316,9 @@ MonoBehaviour:
   shooter: {fileID: 7883860580706588532}
   speed: 8
   range: 6
-  health: 30
-  damage: 5
-  bodyDamage: 10
+  health: 10
+  damage: 1
+  bodyDamage: 2
   _enemies: []
   towerAnimations:
   - {fileID: 939578019, guid: ea55b54a5ee08324981d99f33fb8b457, type: 3}
@@ -384,6 +385,7 @@ MonoBehaviour:
   bodyColorName: {fileID: 0}
   rotatorColorName: {fileID: 0}
   shellColorName: {fileID: 0}
+  trailColorName: {fileID: 0}
   imgBody: {fileID: 0}
   imgRotator: {fileID: 0}
   imgShell: {fileID: 0}
@@ -393,6 +395,32 @@ MonoBehaviour:
   shell: {fileID: 0}
   _isEnemy: 0
   _isChangeable: 0
+  bodyColor: 0
+  enemyBodyColor: 0
+  rotatorColor: 0
+  enemyRotatorColor: 0
+  shellColor: 0
+  enemyShellColor: 0
+  trailColor: 0
+  enemyTrailColor: 0
+--- !u!114 &6122821950039849415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1239180976125049440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a24c8d0b41cc79e4b865286516ba923c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageMultiplier: 1
+  healthMultiplier: 1
+  healthRegen: 0.1
+  moveSpeedMultiplier: 1
+  bulletSpeedMultiplier: 1
+  fireRateMultiplier: 1
 --- !u!1 &1865429458641563929
 GameObject:
   m_ObjectHideFlags: 0
