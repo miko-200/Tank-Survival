@@ -10,8 +10,11 @@ public class Enemy : MonoBehaviour
     public GameObject levelUi;
     public GameObject xpUntilNextLevelUi;
     public float speed = 8.0f;
-    public float damage = 5.0f;
-    public float health = 10f;
+    public float FixedDamage = 1f;
+    public float damage = 1.0f;
+    public float FixedHealth = 3.0f;
+    public float health = 3f;
+    public float FixedXPAmount = 1f;
     public float xpAmount = 1f;
     
     [SerializeField] private Sprite[] enemyAnimations;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -9,9 +10,12 @@ public class Shooter : MonoBehaviour
 {
     public GameObject levelUi;
     public GameObject projectile;
+    public Multipliers MultiplierScript;
+    public TextMeshProUGUI FRText;
     [SerializeField]public Transform[] shootpointsGunPath_1;
     [SerializeField]public Transform[] shootpointsGunPath_2;
     public float timeBetweenShots = 1f;
+    private float firerate;
     [HideInInspector]public bool _wait = true;
     [SerializeField]public Sprite[] GunPath_1;
     [SerializeField]public Sprite[] GunPath_2;
@@ -29,10 +33,18 @@ public class Shooter : MonoBehaviour
 
     private void Start()
     {
+        firerate = timeBetweenShots / MultiplierScript.fireRateMultiplier;
+        FRText.text = firerate.ToString();
         levelUi = GameObject.FindGameObjectWithTag("Level");
         _sr = GetComponent<SpriteRenderer>();
         GunVariant = GunPath_1[0];
         _sr.sprite = GunVariant;
+    }
+
+    public void OnLevelUp()
+    {
+        firerate = timeBetweenShots / MultiplierScript.fireRateMultiplier;
+        FRText.text = firerate.ToString();
     }
 
     private void Update()
@@ -111,7 +123,7 @@ public class Shooter : MonoBehaviour
                 if (!_isReseting)
                 {
                     _isReseting = true;
-                    Invoke(nameof(ResetShot), timeBetweenShots);
+                    Invoke(nameof(ResetShot), firerate);
                 }
             }
         }

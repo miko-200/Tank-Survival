@@ -6,6 +6,7 @@ public class Spawner : MonoBehaviour
 {
     public GameObject enemy;
     public GameObject CenterObject;
+    public Timer timer;
     public float spawnInterval = 5f;
     public float minRadius;
     public float maxRadius;
@@ -66,9 +67,9 @@ public class Spawner : MonoBehaviour
             );
             GameObject newEnemy = Instantiate(enemy, spawnPosition, Quaternion.identity);
             Enemy newEnemyScript = newEnemy.GetComponent<Enemy>();
-            newEnemyScript.xpAmount = EnemyUpgrades.GetComponent<Timer>().xpAmount;
-            newEnemyScript.health = EnemyUpgrades.GetComponent<Timer>().health;
-            newEnemyScript.damage = EnemyUpgrades.GetComponent<Timer>().damage;
+            newEnemyScript.xpAmount = timer.xpAmount;
+            newEnemyScript.health = timer.health;
+            newEnemyScript.damage = timer.damage;
             spawnCount++;
         }
     }
@@ -84,9 +85,9 @@ public class Spawner : MonoBehaviour
         );
         GameObject newEnemy = Instantiate(enemy, spawnPosition, Quaternion.identity);
         Enemy newEnemyScript = newEnemy.GetComponent<Enemy>();
-        newEnemyScript.xpAmount = EnemyUpgrades.GetComponent<Timer>().xpAmount;
-        newEnemyScript.health = EnemyUpgrades.GetComponent<Timer>().health;
-        newEnemyScript.damage = EnemyUpgrades.GetComponent<Timer>().damage;
+        newEnemyScript.xpAmount = timer.xpAmount;
+        newEnemyScript.health = timer.health;
+        newEnemyScript.damage = timer.damage;
         spawnCount++;
     }
 

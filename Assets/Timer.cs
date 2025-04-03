@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -6,50 +7,55 @@ using UnityEngine;
 
 public class Timer : MonoBehaviour
 {
-    public Text timerText;
-    public float timerStartTime;
+    public TextMeshProUGUI timerText;
+    public float time;
     [HideInInspector]public float health;
     [HideInInspector]public float damage;
     [HideInInspector]public float xpAmount;
     
-    private float minutes;
-    private string under10s;
-    private float multiplier = 1.1f;
+    private bool _timerActive = false;
+    private float multiplier = 1.0f;
+    private TimeSpan timeSpan;
     private void Start()
     {
         GameObject enemy = GameObject.FindGameObjectWithTag("Spawner").GetComponent<Spawner>().enemy;
         health = enemy.GetComponent<Enemy>().health;
         damage = enemy.GetComponent<Enemy>().damage;
         xpAmount = enemy.GetComponent<Enemy>().xpAmount;
-        timerStartTime = Time.time;
-        InvokeRepeating(nameof(TimerTick), 0f, 1f);
+        _timerActive = true;
     }
 
-    void TimerTick()
+    private void Update()
     {
-        if (Mathf.Ceil(Time.time - timerStartTime) % 10 == 0 && Mathf.Ceil(Time.time - timerStartTime) != 0)
+        if (_timerActive)
         {
-            xpAmount *= multiplier*multiplier;
-            health *= multiplier;
-            damage *= multiplier;
+            time += Time.deltaTime;
+            timeSpan = TimeSpan.FromSeconds(time);
+            timerText.text = string.Format("{0:D2} : {1:D2}", timeSpan.Minutes, timeSpan.Seconds);
+            if (Math.Round(time) % 20 == 0 && Math.Round(time) != 0)
+            {
+                GameObject enemy = GameObject.FindGameObjectWithTag("Spawner").GetComponent<Spawner>().enemy;
+                xpAmount = enemy.GetComponent<Enemy>().FixedXPAmount * multiplier;
+                health = enemy.GetComponent<Enemy>().FixedHealth * multiplier;
+                damage = enemy.GetComponent<Enemy>().FixedDamage * multiplier;
             
-        }
-        if (Mathf.Ceil(Time.time - timerStartTime) % 60 == 0 && Mathf.Ceil(Time.time - timerStartTime) != 0)
-        {
-            minutes++;
-            multiplier += 0.1f;
-            timerStartTime = Time.time;
-        }
+            }
+            if (Math.Round(time) % 60 == 0 && Math.Round(time) != 0)
+            {
+                multiplier += 0.1f;
+            }
+            if (Math.Round(time) % 5 == 0)
+            {
+                if (GameObject.FindGameObjectWithTag("Player").GetComponent<Tower>()._isRegenerating == false)
+                {
+                    GameObject.FindGameObjectWithTag("Player").GetComponent<Tower>().Regenerate();
+                }
+                
+            }
 
-        if (Mathf.Ceil(Time.time - timerStartTime) < 10)
-        {
-            under10s = "0";
+            timeSpan = TimeSpan.FromSeconds(time);
+            timerText.text = string.Format("{0:D2} : {1:D2}", timeSpan.Minutes, timeSpan.Seconds);
+            //Debug.Log("Tick: " + time);
         }
-        else
-        {
-            under10s = "";
-        }
-        timerText.text = minutes + ":" + under10s + Mathf.Ceil(Time.time - timerStartTime);
-        Debug.Log("Tick: " + Time.time);
     }
 }

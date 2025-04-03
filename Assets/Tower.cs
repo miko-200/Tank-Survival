@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -8,12 +9,24 @@ public class Tower : MonoBehaviour
 {
     public GameObject rotator;
     public GameObject shooter;
+    public PauseGame pause;
+    public GameOver gameOver;
+    public TextMeshProUGUI HPText;
+    public TextMeshProUGUI HPMaxText;
+    public TextMeshProUGUI HRText;
+    public TextMeshProUGUI DMGText;
+    public TextMeshProUGUI DMGMulText;
+    public TextMeshProUGUI MoveText;
     public float speed = 15f;
+    private float speedUsing;
     public float range = 6f;
-    public float health = 10f;
+    public float healthMax = 10f;
+    private float healthMaxUsing;
+    public float health = 1;
     private float healthRegen;
-    private bool _isRegenerating = false;
+    public bool _isRegenerating = false;
     public float damage = 1f;
+    public float damageUsing;
     public float bodyDamage = 2f;
     [HideInInspector]public List<GameObject> _enemies = new();
 
@@ -26,17 +39,21 @@ public class Tower : MonoBehaviour
     private Sprite towerMovingAnimation;
     private bool _changeTowerAnimation = true;
 
-
-    private GameObject _pickedUpWeapon;
-
     private void Start()
     {
+        gameObject.SetActive(true);
         Multipliers multipliersScript = this.GetComponent<Multipliers>();
         bodyDamage *= multipliersScript.damageMultiplier;
-        health *= multipliersScript.healthMultiplier;
+        healthMaxUsing = healthMax * multipliersScript.healthMultiplier;
         healthRegen = multipliersScript.healthMultiplier;
-        damage *= multipliersScript.damageMultiplier;
-        speed *= multipliersScript.moveSpeedMultiplier;
+        damageUsing = damage * multipliersScript.damageMultiplier;
+        speedUsing = speed * multipliersScript.moveSpeedMultiplier;
+        health = healthMax;
+        HPMaxText.text = healthMax.ToString();
+        HRText.text = healthRegen.ToString();
+        DMGText.text = damage.ToString();
+        DMGMulText.text = multipliersScript.damageMultiplier.ToString();
+        MoveText.text = speed.ToString();
         if (gameObject != null)
         {
             _rb = this.gameObject.GetComponent<Rigidbody2D>();
@@ -48,14 +65,13 @@ public class Tower : MonoBehaviour
 
     private void Update()
     {
+        if (_isRegenerating)
+        {
+            Invoke(nameof(ResetRegenerate), 1);
+        }
         if (gameObject != null)
         {
-            if (!_isRegenerating)
-            {
-                _isRegenerating = true;
-            }
-            
-            if (_enemies.Count > 0 && shooter.GetComponent<Shooter>()._automaticShooting)
+            if (_enemies.Count > 0 && shooter.GetComponent<Shooter>()._automaticShooting == true)
             {
                 if (_enemies[0] != null)
                 {
@@ -80,8 +96,11 @@ public class Tower : MonoBehaviour
 
             if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
             {
-                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90;
-                transform.rotation = Quaternion.Euler(0, 0, angle);
+                if (shooter.GetComponent<Shooter>()._automaticShooting != false)
+                {
+                    float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90;
+                    transform.rotation = Quaternion.Euler(0, 0, angle);
+                }
 
                 if (GetComponent<SpriteRenderer>().sprite == towerAnimations[0] && _changeTowerAnimation)
                 {
@@ -108,10 +127,16 @@ public class Tower : MonoBehaviour
         }
     }
 
+    private void ResetRegenerate()
+    {
+        _isRegenerating = false;
+    }
     public void Regenerate()
     {
+        _isRegenerating = true;
+        if (health < healthMaxUsing)
         health += healthRegen;
-        _isRegenerating = false;
+        HPText.text = health.ToString();
     }
     private void FixedUpdate()
     {
@@ -122,7 +147,7 @@ public class Tower : MonoBehaviour
                 _rb.velocity = Vector2.zero;
             }
 
-            _rb.AddForce(_input * speed);
+            _rb.AddForce(_input * speedUsing);
         }
     }
 
@@ -139,10 +164,17 @@ public class Tower : MonoBehaviour
         if (gameObject != null)
         {
             health -= damage;
+            HPText.text = health.ToString();
             Debug.Log("Tower damaged, health: " + health);
             if (health <= 0)
             {
-                Destroy(gameObject);
+                health = 0;
+                HPText.text = health.ToString();
+                Debug.Log("BeforePause");
+                pause.TogglePause();
+                Debug.Log("AfterPause");
+                gameOver.GameOverTimer();
+                gameObject.SetActive(false);
             }
         }
     }
@@ -151,10 +183,15 @@ public class Tower : MonoBehaviour
     {
         Multipliers multipliersScript = this.GetComponent<Multipliers>();
         bodyDamage *= multipliersScript.damageMultiplier;
-        health *= multipliersScript.healthMultiplier;
+        healthMaxUsing = healthMax * multipliersScript.healthMultiplier;
         healthRegen = multipliersScript.healthMultiplier;
-        damage *= multipliersScript.damageMultiplier;
-        speed *= multipliersScript.moveSpeedMultiplier;
+        damageUsing = damage * multipliersScript.damageMultiplier;
+        speedUsing = speed * multipliersScript.moveSpeedMultiplier;
+        HPMaxText.text = healthMax.ToString();
+        HRText.text = healthRegen.ToString();
+        DMGText.text = damageUsing.ToString();
+        DMGMulText.text = multipliersScript.damageMultiplier.ToString();
+        MoveText.text = speedUsing.ToString();
     } 
 
     private void OnCollisionEnter2D(Collision2D other)

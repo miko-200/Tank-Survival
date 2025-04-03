@@ -105,6 +105,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 0}
+  MultiplierScript: {fileID: 0}
+  BulDurText: {fileID: 0}
   speed: 10
   lifeTime: 2
 --- !u!50 &5726231839056888465
