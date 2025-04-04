@@ -16,6 +16,7 @@ public class Timer : MonoBehaviour
     private bool _timerActive = false;
     private float multiplier = 1.0f;
     private TimeSpan timeSpan;
+    private bool _timeout = false;
     private void Start()
     {
         GameObject enemy = GameObject.FindGameObjectWithTag("Spawner").GetComponent<Spawner>().enemy;
@@ -38,17 +39,18 @@ public class Timer : MonoBehaviour
                 xpAmount = enemy.GetComponent<Enemy>().FixedXPAmount * multiplier;
                 health = enemy.GetComponent<Enemy>().FixedHealth * multiplier;
                 damage = enemy.GetComponent<Enemy>().FixedDamage * multiplier;
-            
             }
-            if (Math.Round(time) % 60 == 0 && Math.Round(time) != 0)
+            if (Math.Round(time) % 60 == 0 && Math.Round(time) != 0 && !_timeout)
             {
+                _timeout = true;
                 multiplier += 0.1f;
+                Invoke(nameof(Timeout), 1);
             }
             if (Math.Round(time) % 5 == 0)
             {
-                if (GameObject.FindGameObjectWithTag("Player").GetComponent<Tower>()._isRegenerating == false)
+                if (GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStats>()._isRegenerating == false)
                 {
-                    GameObject.FindGameObjectWithTag("Player").GetComponent<Tower>().Regenerate();
+                    GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStats>().Regenerate();
                 }
                 
             }
@@ -57,5 +59,11 @@ public class Timer : MonoBehaviour
             timerText.text = string.Format("{0:D2} : {1:D2}", timeSpan.Minutes, timeSpan.Seconds);
             //Debug.Log("Tick: " + time);
         }
+        
+    }
+
+    private void Timeout()
+    {
+        _timeout = false;
     }
 }

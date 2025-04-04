@@ -10,12 +10,10 @@ public class Shooter : MonoBehaviour
 {
     public GameObject levelUi;
     public GameObject projectile;
-    public Multipliers MultiplierScript;
-    public TextMeshProUGUI FRText;
+    public PlayerStats pStatsS;
+    
     [SerializeField]public Transform[] shootpointsGunPath_1;
     [SerializeField]public Transform[] shootpointsGunPath_2;
-    public float timeBetweenShots = 1f;
-    private float firerate;
     [HideInInspector]public bool _wait = true;
     [SerializeField]public Sprite[] GunPath_1;
     [SerializeField]public Sprite[] GunPath_2;
@@ -26,25 +24,18 @@ public class Shooter : MonoBehaviour
     private float _shotTimer;
     private bool _canShoot = true;
     private bool _isReseting;
-    private float waitBeforeFirstShot = (float)0.02;
+    private float waitBeforeFirstShot = 0.02f;
     private Sprite GunVariant;
     private SpriteRenderer _sr;
     private int shootpointsNeeded = 1;
 
     private void Start()
     {
-        firerate = timeBetweenShots / MultiplierScript.fireRateMultiplier;
-        FRText.text = firerate.ToString();
+        pStatsS = GetComponentInParent<PlayerStats>();
         levelUi = GameObject.FindGameObjectWithTag("Level");
         _sr = GetComponent<SpriteRenderer>();
         GunVariant = GunPath_1[0];
         _sr.sprite = GunVariant;
-    }
-
-    public void OnLevelUp()
-    {
-        firerate = timeBetweenShots / MultiplierScript.fireRateMultiplier;
-        FRText.text = firerate.ToString();
     }
 
     private void Update()
@@ -96,8 +87,8 @@ public class Shooter : MonoBehaviour
         {
             _automaticShooting = false;
         }
-        Tower tower = GetComponentInParent<Tower>();
-        if ((tower._enemies.Count > 0 && _canShoot && _automaticShooting) || (Input.GetMouseButtonDown(0) && !_automaticShooting && _canShoot))
+        PlayerMovement playerMovement = GetComponentInParent<PlayerMovement>();
+        if ((playerMovement._enemies.Count > 0 && _canShoot && _automaticShooting) || (Input.GetMouseButtonDown(0) && !_automaticShooting && _canShoot))
         {
             Invoke(nameof(Wait), waitBeforeFirstShot);
             if (!_wait)
@@ -123,7 +114,7 @@ public class Shooter : MonoBehaviour
                 if (!_isReseting)
                 {
                     _isReseting = true;
-                    Invoke(nameof(ResetShot), firerate);
+                    Invoke(nameof(ResetShot), pStatsS.firerate);
                 }
             }
         }

@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class Upgrades : MonoBehaviour
 {
     public PauseGame PauseScriptHolder;
     public Multipliers MultiplierScriptHolder;
-    public Tower TowerScriptHolder;
+    [FormerlySerializedAs("TowerScriptHolder")] public PlayerStats playerStatsScriptHolder;
     public Shooter ShooterScriptHolder;
     public Projectile ProjectileScriptHolder;
     
@@ -128,7 +129,7 @@ public class Upgrades : MonoBehaviour
             }
             case 3:
             {
-                MultiplierScriptHolder.healthRegen += 0.1f;
+                MultiplierScriptHolder.healthRegenMultiplier += 0.1f;
                 break;
             }
             case 4:
@@ -153,8 +154,7 @@ public class Upgrades : MonoBehaviour
             }
         }
         HideUpgrades();
-        TowerScriptHolder.OnLevelUp();
-        ShooterScriptHolder.OnLevelUp();
+        playerStatsScriptHolder.OnLevelUp();
         //ProjectileScriptHolder.OnLevelUp();
     }
 

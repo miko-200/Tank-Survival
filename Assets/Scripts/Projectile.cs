@@ -9,10 +9,8 @@ using Random = UnityEngine.Random;
 public class Projectile : MonoBehaviour
 {
     public GameObject Player;
-    public Multipliers MultiplierScript;
-    public TextMeshProUGUI BulDurText;
+    public PlayerStats pStatsS;
     public float speed = 10f;
-    public float lifeTime = 1f;
 
     public void Init()
     {
@@ -22,14 +20,11 @@ public class Projectile : MonoBehaviour
     private void Start()
     {
         Player = GameObject.FindGameObjectWithTag("Player");
-        MultiplierScript = Player.GetComponent<Multipliers>();
-        BulDurText = GameObject.Find("BulletLifeTime").GetComponent<TextMeshProUGUI>();
-        lifeTime = MultiplierScript.bulletLifeTime;
-        BulDurText.text = lifeTime.ToString();
+        pStatsS = Player.GetComponent<PlayerStats>();
         GetComponent<Rigidbody2D>().velocity = transform.up * speed;
         //GetComponent<Rigidbody2D>().AddForce(transform.right * speed);
         
-        Destroy(gameObject, lifeTime);
+        Destroy(gameObject, pStatsS.bulletLifeTime);
     }
 
     private void Update()
@@ -40,12 +35,6 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    public void OnLevelUp()
-    {
-        lifeTime = MultiplierScript.bulletLifeTime;
-        BulDurText.text = lifeTime.ToString();
-    }
-
     private void OnTriggerEnter2D(Collider2D other)
     {
         Debug.Log("Trigger entered with: " + other.gameObject.name);
@@ -53,7 +42,7 @@ public class Projectile : MonoBehaviour
         if (other.gameObject.GetComponent<Enemy>())
         {
             Debug.Log("Damaging enemy: " + other.gameObject.name);
-            other.gameObject.GetComponent<Enemy>().Damage(Player.GetComponent<Tower>().damageUsing);
+            other.gameObject.GetComponent<Enemy>().Damage(pStatsS.damage);
             Destroy(gameObject);  // Destroy the projectile on trigger hit
         }
     }

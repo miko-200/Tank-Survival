@@ -1,74 +1,51 @@
+﻿using UnityEngine;
+using System.Collections.Generic;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using Unity.Mathematics;
-using UnityEngine;
+using UnityEngine.Serialization;
 
-public class Tower : MonoBehaviour
+public class PlayerMovement : MonoBehaviour
 {
     public GameObject rotator;
     public GameObject shooter;
     public PauseGame pause;
     public GameOver gameOver;
-    public TextMeshProUGUI HPText;
-    public TextMeshProUGUI HPMaxText;
-    public TextMeshProUGUI HRText;
-    public TextMeshProUGUI DMGText;
-    public TextMeshProUGUI DMGMulText;
-    public TextMeshProUGUI MoveText;
-    public float speed = 15f;
-    private float speedUsing;
-    public float range = 6f;
-    public float healthMax = 10f;
-    private float healthMaxUsing;
-    public float health = 1;
-    private float healthRegen;
-    public bool _isRegenerating = false;
-    public float damage = 1f;
-    public float damageUsing;
-    public float bodyDamage = 2f;
+    
     [HideInInspector]public List<GameObject> _enemies = new();
-
-    //private GameObject enemy;
+    
+    private Multipliers multipliersScript;
+    private PlayerStats pStatsS;
+    
     private Rigidbody2D _rb;
     private CircleCollider2D _col;
     private Vector2 _input;
     private List<GameObject> _projectiles = new();
-    [SerializeField] private Sprite[] towerAnimations;
-    private Sprite towerMovingAnimation;
-    private bool _changeTowerAnimation = true;
+    
+    [FormerlySerializedAs("towerAnimations")] [SerializeField] private Sprite[] tankAnimations;
+    private Sprite tankMovingAnimation;
+    private bool _changeTankAnimation = true;
 
     private void Start()
     {
         gameObject.SetActive(true);
-        Multipliers multipliersScript = this.GetComponent<Multipliers>();
-        bodyDamage *= multipliersScript.damageMultiplier;
-        healthMaxUsing = healthMax * multipliersScript.healthMultiplier;
-        healthRegen = multipliersScript.healthMultiplier;
-        damageUsing = damage * multipliersScript.damageMultiplier;
-        speedUsing = speed * multipliersScript.moveSpeedMultiplier;
-        health = healthMax;
-        HPMaxText.text = healthMax.ToString();
-        HRText.text = healthRegen.ToString();
-        DMGText.text = damage.ToString();
-        DMGMulText.text = multipliersScript.damageMultiplier.ToString();
-        MoveText.text = speed.ToString();
+        multipliersScript = GetComponent<Multipliers>();
+        pStatsS = GetComponent<PlayerStats>();
+        
+        pStatsS.speed = pStatsS.speedDefault * multipliersScript.moveSpeedMultiplier;
+        pStatsS.range = pStatsS.rangeDefault;
+        pStatsS.SpeedText.text = pStatsS.speed.ToString();
         if (gameObject != null)
         {
             _rb = this.gameObject.GetComponent<Rigidbody2D>();
             _col = this.gameObject.GetComponent<CircleCollider2D>();
-            _col.radius = range;
-            towerMovingAnimation = this.gameObject.GetComponent<SpriteRenderer>().sprite;
+            _col.radius = pStatsS.range;
+            tankMovingAnimation = this.gameObject.GetComponent<SpriteRenderer>().sprite;
         }
     }
 
     private void Update()
     {
-        if (_isRegenerating)
-        {
-            Invoke(nameof(ResetRegenerate), 1);
-        }
         if (gameObject != null)
         {
             if (_enemies.Count > 0 && shooter.GetComponent<Shooter>()._automaticShooting == true)
@@ -96,47 +73,32 @@ public class Tower : MonoBehaviour
 
             if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
             {
-                if (shooter.GetComponent<Shooter>()._automaticShooting != false)
+                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90;
+                transform.rotation = Quaternion.Euler(0, 0, angle);
+
+                if (GetComponent<SpriteRenderer>().sprite == tankAnimations[0] && _changeTankAnimation)
                 {
-                    float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90;
-                    transform.rotation = Quaternion.Euler(0, 0, angle);
+                    tankMovingAnimation = tankAnimations[1];
+                    _changeTankAnimation = false;
+                }
+                else if (GetComponent<SpriteRenderer>().sprite == tankAnimations[1] && _changeTankAnimation)
+                {
+                    tankMovingAnimation = tankAnimations[2];
+                    _changeTankAnimation = false;
+                }
+                else if (GetComponent<SpriteRenderer>().sprite == tankAnimations[2] && _changeTankAnimation)
+                {
+                    tankMovingAnimation = tankAnimations[0];
+                    _changeTankAnimation = false;
                 }
 
-                if (GetComponent<SpriteRenderer>().sprite == towerAnimations[0] && _changeTowerAnimation)
+                if (tankMovingAnimation != null)
                 {
-                    towerMovingAnimation = towerAnimations[1];
-                    _changeTowerAnimation = false;
-                }
-                else if (GetComponent<SpriteRenderer>().sprite == towerAnimations[1] && _changeTowerAnimation)
-                {
-                    towerMovingAnimation = towerAnimations[2];
-                    _changeTowerAnimation = false;
-                }
-                else if (GetComponent<SpriteRenderer>().sprite == towerAnimations[2] && _changeTowerAnimation)
-                {
-                    towerMovingAnimation = towerAnimations[0];
-                    _changeTowerAnimation = false;
-                }
-
-                if (towerMovingAnimation != null)
-                {
-                    GetComponent<SpriteRenderer>().sprite = towerMovingAnimation;
+                    GetComponent<SpriteRenderer>().sprite = tankMovingAnimation;
                     Invoke(nameof(ChangeAnimation), 0.5f);
                 }
             }
         }
-    }
-
-    private void ResetRegenerate()
-    {
-        _isRegenerating = false;
-    }
-    public void Regenerate()
-    {
-        _isRegenerating = true;
-        if (health < healthMaxUsing)
-        health += healthRegen;
-        HPText.text = health.ToString();
     }
     private void FixedUpdate()
     {
@@ -147,29 +109,37 @@ public class Tower : MonoBehaviour
                 _rb.velocity = Vector2.zero;
             }
 
-            _rb.AddForce(_input * speedUsing);
+            _rb.AddForce(_input * pStatsS.speed);
         }
     }
-
+    
     private void ChangeAnimation()
     {
         if (gameObject != null)
         {
-            _changeTowerAnimation = true;
+            _changeTankAnimation = true;
         }
     }
+    
+    /*IEnumerator DamageOnCol(Collision2D other, float delayTime)
+    {
+        yield return new WaitForSeconds(delayTime);
+        //other.gameObject.GetComponent<Enemy>().transform.position -= 1;
+        other.gameObject.GetComponent<Enemy>().Damage(playerStatsScript.bodyDamage);
+        Damage(other.gameObject.GetComponent<Enemy>().damage);
+    }*/
     
     private void Damage(float damage)
     {
         if (gameObject != null)
         {
-            health -= damage;
-            HPText.text = health.ToString();
-            Debug.Log("Tower damaged, health: " + health);
-            if (health <= 0)
+            pStatsS.health -= damage;
+            pStatsS.HPText.text = pStatsS.health.ToString();
+            Debug.Log("Tower damaged, health: " + pStatsS.health);
+            if (pStatsS.health <= 0)
             {
-                health = 0;
-                HPText.text = health.ToString();
+                pStatsS.health = 0;
+                pStatsS.HPText.text = Math.Round(pStatsS.health, 2).ToString();
                 Debug.Log("BeforePause");
                 pause.TogglePause();
                 Debug.Log("AfterPause");
@@ -178,34 +148,30 @@ public class Tower : MonoBehaviour
             }
         }
     }
-
-    public void OnLevelUp()
-    {
-        Multipliers multipliersScript = this.GetComponent<Multipliers>();
-        bodyDamage *= multipliersScript.damageMultiplier;
-        healthMaxUsing = healthMax * multipliersScript.healthMultiplier;
-        healthRegen = multipliersScript.healthMultiplier;
-        damageUsing = damage * multipliersScript.damageMultiplier;
-        speedUsing = speed * multipliersScript.moveSpeedMultiplier;
-        HPMaxText.text = healthMax.ToString();
-        HRText.text = healthRegen.ToString();
-        DMGText.text = damageUsing.ToString();
-        DMGMulText.text = multipliersScript.damageMultiplier.ToString();
-        MoveText.text = speedUsing.ToString();
-    } 
-
+    
     private void OnCollisionEnter2D(Collision2D other)
     {
         if (gameObject != null){
             if (other.gameObject.CompareTag("Enemy"))
             {
-                //other.gameObject.GetComponent<Enemy>().transform.position -= 1;
-                other.gameObject.GetComponent<Enemy>().Damage(bodyDamage);
+                //StartCoroutine(DamageOnCol(other, 0.5f));
+                other.gameObject.GetComponent<Enemy>().Damage(pStatsS.bodyDamage);
                 Damage(other.gameObject.GetComponent<Enemy>().damage);
             }
         }
     }
 
+    /*private void OnCollisionExit2D(Collision2D other)
+    {
+        if (gameObject != null)
+        {
+            if (other.gameObject.CompareTag("Enemy"))
+            {
+                StopCoroutine(DamageOnCol(other, 0.5f));
+            }
+        }
+    }*/
+    
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (gameObject != null)

@@ -105,10 +105,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 0}
-  MultiplierScript: {fileID: 0}
-  BulDurText: {fileID: 0}
+  pStatsS: {fileID: 0}
   speed: 10
-  lifeTime: 2
 --- !u!50 &5726231839056888465
 Rigidbody2D:
   serializedVersion: 4
@@ -265,7 +263,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5488997744877924478}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0c46c0fee1886e14abc0b971b0690b35, type: 3}
   m_Name: 
@@ -544,7 +542,6 @@ GameObject:
   - component: {fileID: 2003972222024519830}
   - component: {fileID: 2466354758911159775}
   - component: {fileID: 3076821433624561362}
-  - component: {fileID: 7111267021219623463}
   m_Layer: 0
   m_Name: TrailFollower
   m_TagString: Untagged
@@ -694,33 +691,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectile: {fileID: 458711065049162338}
   offsetDistance: 0.3
---- !u!114 &7111267021219623463
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9221720618782581719}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c46c0fee1886e14abc0b971b0690b35, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  chC: {fileID: 0}
-  imgBody: {fileID: 0}
-  imgRotator: {fileID: 0}
-  imgShell: {fileID: 0}
-  bodyRenderer: {fileID: 0}
-  rotatorRenderer: {fileID: 0}
-  shellRenderer: {fileID: 3206372550257220265}
-  trailRenderer: {fileID: 2466354758911159775}
-  trailMaterial: {fileID: 2100000, guid: 377494f73ef529c4c9d7dc303bb38521, type: 2}
-  bodyColor: 0
-  enemyBodyColor: 0
-  rotatorColor: 0
-  enemyRotatorColor: 0
-  shellColor: 0
-  enemyShellColor: 0
-  trailColor: 0
-  enemyTrailColor: 0
-  _isEnemy: 0

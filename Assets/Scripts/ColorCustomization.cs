@@ -103,7 +103,6 @@ public class ColorCustomization : MonoBehaviour
 
             if (ColorUtility.TryParseHtmlString(selectedColorHex, out color))
             {
-                trail = GetComponent<TrailRenderer>();
                 trail.material = new Material(Shader.Find("Sprites/Default"));
 
                 // A simple 2 color gradient with a fixed alpha of 1.0f.
@@ -126,7 +125,6 @@ public class ColorCustomization : MonoBehaviour
         }
         else if (colorIndex == Colors.Count-1)
         {
-            trail = GetComponent<TrailRenderer>();
             if (trailMaterial != null)
             {
                 trail.material = trailMaterial;

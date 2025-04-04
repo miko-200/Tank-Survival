@@ -158,10 +158,12 @@ GameObject:
   - component: {fileID: 1918890269486953542}
   - component: {fileID: 5171578015002280818}
   - component: {fileID: 6988422185759203246}
+  - component: {fileID: 1158969030343032991}
   - component: {fileID: 5485193569308831071}
   - component: {fileID: 8127515416653283885}
-  - component: {fileID: 8791847839845042631}
   - component: {fileID: 6122821950039849415}
+  - component: {fileID: 8697658029545585710}
+  - component: {fileID: 8623396542827811173}
   m_Layer: 0
   m_Name: Tower
   m_TagString: Player
@@ -300,6 +302,32 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
+--- !u!114 &1158969030343032991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1239180976125049440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2c7a95bd9b24e47b2a0fb81b004a7bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotator: {fileID: 8258313565628327287}
+  shooter: {fileID: 7883860580706588532}
+  pause: {fileID: 0}
+  gameOver: {fileID: 0}
+  SpeedText: {fileID: 0}
+  speedDefault: 8
+  rangeDefault: 6
+  _enemies: []
+  speed: 0
+  range: 0
+  tankAnimations:
+  - {fileID: 939578019, guid: ea55b54a5ee08324981d99f33fb8b457, type: 3}
+  - {fileID: -645201112, guid: ea55b54a5ee08324981d99f33fb8b457, type: 3}
+  - {fileID: -459918350, guid: ea55b54a5ee08324981d99f33fb8b457, type: 3}
 --- !u!114 &5485193569308831071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -312,18 +340,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d38215ac8b3672f42833859e7c1d11cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotator: {fileID: 8258313565628327287}
-  shooter: {fileID: 7883860580706588532}
-  speed: 8
-  range: 6
+  HPText: {fileID: 0}
+  HPMaxText: {fileID: 0}
+  HRText: {fileID: 0}
+  DMGText: {fileID: 0}
+  DMGMulText: {fileID: 0}
+  healthMax: 10
   health: 10
+  _isRegenerating: 0
   damage: 1
+  damageUsing: 1
   bodyDamage: 2
-  _enemies: []
-  towerAnimations:
-  - {fileID: 939578019, guid: ea55b54a5ee08324981d99f33fb8b457, type: 3}
-  - {fileID: -645201112, guid: ea55b54a5ee08324981d99f33fb8b457, type: 3}
-  - {fileID: -459918350, guid: ea55b54a5ee08324981d99f33fb8b457, type: 3}
 --- !u!61 &8127515416653283885
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -369,40 +396,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.1, y: 1.1}
   m_EdgeRadius: 0
---- !u!114 &8791847839845042631
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1239180976125049440}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1528f4fdf8620047b671be490834c23, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tankName: {fileID: 0}
-  bodyColorName: {fileID: 0}
-  rotatorColorName: {fileID: 0}
-  shellColorName: {fileID: 0}
-  trailColorName: {fileID: 0}
-  imgBody: {fileID: 0}
-  imgRotator: {fileID: 0}
-  imgShell: {fileID: 0}
-  bodyRenderer: {fileID: 114483077532223600}
-  rotatorRenderer: {fileID: 4121113197186270098}
-  shellRenderer: {fileID: 3206372550257220265, guid: bd9fd7d9d930d4d4a84c5526229eebe9, type: 3}
-  shell: {fileID: 0}
-  _isEnemy: 0
-  _isChangeable: 0
-  bodyColor: 0
-  enemyBodyColor: 0
-  rotatorColor: 0
-  enemyRotatorColor: 0
-  shellColor: 0
-  enemyShellColor: 0
-  trailColor: 0
-  enemyTrailColor: 0
 --- !u!114 &6122821950039849415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -419,7 +412,55 @@ MonoBehaviour:
   healthMultiplier: 1
   healthRegen: 0.1
   moveSpeedMultiplier: 1
-  bulletSpeedMultiplier: 1
+  bulletLifeTime: 1
+  fireRateMultiplier: 1
+--- !u!114 &8697658029545585710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1239180976125049440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c46c0fee1886e14abc0b971b0690b35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chC: {fileID: 0}
+  imgBody: {fileID: 0}
+  imgRotator: {fileID: 0}
+  imgShell: {fileID: 0}
+  bodyRenderer: {fileID: 114483077532223600}
+  rotatorRenderer: {fileID: 4121113197186270098}
+  shellRenderer: {fileID: 3206372550257220265, guid: bd9fd7d9d930d4d4a84c5526229eebe9, type: 3}
+  trailRenderer: {fileID: 0}
+  trailMaterial: {fileID: 0}
+  bodyColor: 0
+  enemyBodyColor: 0
+  rotatorColor: 0
+  enemyRotatorColor: 0
+  shellColor: 0
+  enemyShellColor: 0
+  trailColor: 0
+  enemyTrailColor: 0
+  _isEnemy: 0
+--- !u!114 &8623396542827811173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1239180976125049440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a24c8d0b41cc79e4b865286516ba923c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageMultiplier: 1
+  healthMultiplier: 1
+  healthRegen: 0.1
+  moveSpeedMultiplier: 1
+  bulletLifeTime: 1
   fireRateMultiplier: 1
 --- !u!1 &1865429458641563929
 GameObject:
@@ -939,6 +980,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelUi: {fileID: 0}
   projectile: {fileID: 5488997744877924478, guid: bd9fd7d9d930d4d4a84c5526229eebe9, type: 3}
+  MultiplierScript: {fileID: 6122821950039849415}
+  FRText: {fileID: 0}
   shootpointsGunPath_1:
   - {fileID: 508229711377489969}
   - {fileID: 1957486303508661243}
@@ -958,7 +1001,7 @@ MonoBehaviour:
   - {fileID: 880984837379824972}
   - {fileID: 7241279743550971185}
   - {fileID: 2812515180886041205}
-  timeBetweenShots: 0.5
+  timeBetweenShots: 1
   _wait: 1
   GunPath_1:
   - {fileID: 1281245423, guid: 42f5f7bb257b2fb4cb94f83938344c1d, type: 3}
