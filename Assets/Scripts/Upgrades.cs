@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class Upgrades : MonoBehaviour
 {
@@ -28,7 +30,8 @@ public class Upgrades : MonoBehaviour
     public Image UpgradePanel2Image;
     public Image UpgradePanel3Image;
     
-    private List<string> upgradesText = new List<string>() {"Get 10% more health", "Get 20% more damage", "Get 10% more speed", "Get 10% more health regen", "Get 10% more Bullet Duration", "Get 10% more fire rate", "Get a second gun behind the 1st one", "Get a second gun next to the 1st gun"};
+    private List<string> upgradesText = new List<string>() {"Get 10% more health", "Get 20% more damage", "Get 10% more speed", "Get 10% more health regen", "Get 10% more Bullet Duration", "Get 10% more fire rate", "Get a second gun behind the 1st one", "Get a second gun next to the 1st gun", "Get two guns from both sides", "Get 2 guns from behind", "Get additional 4 guns from all corners", "Get additional guns from both sides"};
+    
     private int randomUpgrade1;
     private int randomUpgrade2;
     private int randomUpgrade3;
@@ -39,20 +42,41 @@ public class Upgrades : MonoBehaviour
         if (count == 1)
         {
             UpgradePanel1.SetActive(true);
-            
-            randomUpgrade1 = Random.Range(0, upgradesText.Count-2);
-            
+
+            if (ShooterScriptHolder.gunPath == 1)
+            {
+                if (playerStatsScriptHolder.level == 30)
+                {
+                    randomUpgrade1 = upgradesText.Count - 4;
+                }
+                else if(playerStatsScriptHolder.level == 45)
+                {
+                    randomUpgrade1 = upgradesText.Count - 2;
+                }
+            }
+            else if (ShooterScriptHolder.gunPath == 2)
+            {
+                if (playerStatsScriptHolder.level == 30)
+                {
+                    randomUpgrade1 = upgradesText.Count - 3;
+                } 
+                else if (playerStatsScriptHolder.level == 45)
+                {
+                    randomUpgrade1 = upgradesText.Count - 1;
+                }
+            }
+
             UpgradePanel1Text.text = upgradesText[randomUpgrade1];
             
             UpgradePanel1Image.sprite = UpgradePanelImage[randomUpgrade1];
         }
         else if (count == 2)
         {
-            UpgradePanel2.SetActive(true);
+            UpgradePanel1.SetActive(true);
             UpgradePanel2.SetActive(true);
             
-            randomUpgrade1 = upgradesText.Count-2;
-            randomUpgrade2 = upgradesText.Count-1;
+            randomUpgrade1 = upgradesText.Count-6;
+            randomUpgrade2 = upgradesText.Count-5;
             
             UpgradePanel1Text.text = upgradesText[randomUpgrade1];
             UpgradePanel2Text.text = upgradesText[randomUpgrade2];
@@ -65,9 +89,9 @@ public class Upgrades : MonoBehaviour
             UpgradePanel2.SetActive(true);
             UpgradePanel3.SetActive(true);
             
-            randomUpgrade1 = Random.Range(0, upgradesText.Count-2);
-            randomUpgrade2 = Random.Range(0, upgradesText.Count-2);
-            randomUpgrade3 = Random.Range(0, upgradesText.Count-2);
+            randomUpgrade1 = Random.Range(0, upgradesText.Count-6);
+            randomUpgrade2 = Random.Range(0, upgradesText.Count-6);
+            randomUpgrade3 = Random.Range(0, upgradesText.Count-6);
             
             UpgradePanel1Text.text = upgradesText[randomUpgrade1];
             UpgradePanel2Text.text = upgradesText[randomUpgrade2];
@@ -145,11 +169,33 @@ public class Upgrades : MonoBehaviour
             case 6:
             {
                 ShooterScriptHolder.gunPath = 1;
+                ShooterScriptHolder.GunVariant = ShooterScriptHolder.GunPath_1[1];
                 break;
             }
             case 7:
             {
                 ShooterScriptHolder.gunPath = 2;
+                ShooterScriptHolder.GunVariant = ShooterScriptHolder.GunPath_2[1];
+                break;
+            }
+            case 8:
+            {
+                ShooterScriptHolder.GunVariant = ShooterScriptHolder.GunPath_1[2];
+                break;
+            }
+            case 9:
+            {
+                ShooterScriptHolder.GunVariant = ShooterScriptHolder.GunPath_2[2];
+                break;
+            }
+            case 10:
+            {
+                ShooterScriptHolder.GunVariant = ShooterScriptHolder.GunPath_1[3];
+                break;
+            }
+            case 11:
+            {
+                ShooterScriptHolder.GunVariant = ShooterScriptHolder.GunPath_2[3];
                 break;
             }
         }

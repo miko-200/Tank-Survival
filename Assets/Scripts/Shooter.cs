@@ -20,14 +20,18 @@ public class Shooter : MonoBehaviour
     public int gunPath = 1;
     public bool _automaticShooting = true;
     
+    [HideInInspector]public List<GameObject> _enemies = new();
+    private List<GameObject> _projectiles = new();
+    
 
     private float _shotTimer;
     private bool _canShoot = true;
     private bool _isReseting;
     private float waitBeforeFirstShot = 0.02f;
-    private Sprite GunVariant;
+    [HideInInspector]public Sprite GunVariant;
     private SpriteRenderer _sr;
     private int shootpointsNeeded = 1;
+    private CircleCollider2D _col;
 
     private void Start()
     {
@@ -36,45 +40,23 @@ public class Shooter : MonoBehaviour
         _sr = GetComponent<SpriteRenderer>();
         GunVariant = GunPath_1[0];
         _sr.sprite = GunVariant;
+        _col = GetComponent<CircleCollider2D>();
+        pStatsS.range = pStatsS.rangeDefault;
+        _col.radius = pStatsS.range;
     }
 
     private void Update()
     {
-        if (levelUi.GetComponent<Level>().level == 15)
+        if (pStatsS.level == 15)
         {
-            if (gunPath == 1)
-            {
-                GunVariant = GunPath_1[1];
-            }
-            else
-            {
-                GunVariant = GunPath_2[1];
-            }
-
             shootpointsNeeded = 2;
         }
-        else if (levelUi.GetComponent<Level>().level == 30)
+        else if (pStatsS.level == 30)
         {
-            if (gunPath == 1)
-            {
-                GunVariant = GunPath_1[2];
-            }
-            else
-            {
-                GunVariant = GunPath_2[2];
-            }
             shootpointsNeeded = 4;
         }
-        else if (levelUi.GetComponent<Level>().level == 45)
+        else if (pStatsS.level == 45)
         {
-            if (gunPath == 1)
-            {
-                GunVariant = GunPath_1[3];
-            }
-            else
-            {
-                GunVariant = GunPath_2[3];
-            }
             shootpointsNeeded = 8;
         }
         _sr.sprite = GunVariant;
@@ -87,8 +69,7 @@ public class Shooter : MonoBehaviour
         {
             _automaticShooting = false;
         }
-        PlayerMovement playerMovement = GetComponentInParent<PlayerMovement>();
-        if ((playerMovement._enemies.Count > 0 && _canShoot && _automaticShooting) || (Input.GetMouseButtonDown(0) && !_automaticShooting && _canShoot))
+        if ((_enemies.Count > 0 && _canShoot && _automaticShooting) || (Input.GetMouseButtonDown(0) && !_automaticShooting && _canShoot))
         {
             Invoke(nameof(Wait), waitBeforeFirstShot);
             if (!_wait)
@@ -128,5 +109,43 @@ public class Shooter : MonoBehaviour
     {
         _isReseting = false;
         _canShoot = true;
+    }
+    
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (gameObject != null)
+        {
+            if (other.gameObject.CompareTag("Enemy") && !_enemies.Contains(other.gameObject))
+            {
+                _enemies.Add(other.gameObject);
+                Debug.Log("Enemy added: " + other.gameObject.name);
+            }
+
+            if (other.gameObject.CompareTag("Projectile") && !_projectiles.Contains(other.gameObject))
+            {
+                _projectiles.Add(other.gameObject);
+                Debug.Log("Projectile added: " + other.gameObject.name);
+            }
+        }
+    }
+    
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (gameObject != null)
+        {
+            if (other.gameObject.CompareTag("Enemy") && _enemies.Contains(other.gameObject))
+            {
+                _enemies.Remove(other.gameObject);
+                GetComponentInChildren<Shooter>()._wait = true;
+                Debug.Log("Enemy removed: " + other.gameObject.name);
+            }
+
+            if (other.gameObject.CompareTag("Projectile") && !_projectiles.Contains(other.gameObject))
+            {
+                _projectiles.Remove(other.gameObject);
+                Destroy(other.gameObject);
+                Debug.Log("Projectile removed: " + other.gameObject.name);
+            }
+        }
     }
 }

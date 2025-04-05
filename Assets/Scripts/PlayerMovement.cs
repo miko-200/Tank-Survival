@@ -12,15 +12,14 @@ public class PlayerMovement : MonoBehaviour
     public PauseGame pause;
     public GameOver gameOver;
     
-    [HideInInspector]public List<GameObject> _enemies = new();
-    
     private Multipliers multipliersScript;
     private PlayerStats pStatsS;
     
     private Rigidbody2D _rb;
     private CircleCollider2D _col;
     private Vector2 _input;
-    private List<GameObject> _projectiles = new();
+    
+    private List<GameObject> _enemies;
     
     [FormerlySerializedAs("towerAnimations")] [SerializeField] private Sprite[] tankAnimations;
     private Sprite tankMovingAnimation;
@@ -33,13 +32,11 @@ public class PlayerMovement : MonoBehaviour
         pStatsS = GetComponent<PlayerStats>();
         
         pStatsS.speed = pStatsS.speedDefault * multipliersScript.moveSpeedMultiplier;
-        pStatsS.range = pStatsS.rangeDefault;
         pStatsS.SpeedText.text = pStatsS.speed.ToString();
         if (gameObject != null)
         {
             _rb = this.gameObject.GetComponent<Rigidbody2D>();
             _col = this.gameObject.GetComponent<CircleCollider2D>();
-            _col.radius = pStatsS.range;
             tankMovingAnimation = this.gameObject.GetComponent<SpriteRenderer>().sprite;
         }
     }
@@ -48,6 +45,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (gameObject != null)
         {
+            _enemies = shooter.GetComponent<Shooter>()._enemies;
             if (_enemies.Count > 0 && shooter.GetComponent<Shooter>()._automaticShooting == true)
             {
                 if (_enemies[0] != null)
@@ -129,7 +127,7 @@ public class PlayerMovement : MonoBehaviour
         Damage(other.gameObject.GetComponent<Enemy>().damage);
     }*/
     
-    private void Damage(float damage)
+    public void Damage(float damage)
     {
         if (gameObject != null)
         {
@@ -155,8 +153,8 @@ public class PlayerMovement : MonoBehaviour
             if (other.gameObject.CompareTag("Enemy"))
             {
                 //StartCoroutine(DamageOnCol(other, 0.5f));
-                other.gameObject.GetComponent<Enemy>().Damage(pStatsS.bodyDamage);
-                Damage(other.gameObject.GetComponent<Enemy>().damage);
+                other.gameObject.GetComponent<EnemyStats>().Damage(pStatsS.bodyDamage);
+                Damage(other.gameObject.GetComponent<EnemyStats>().bodyDamage);
             }
         }
     }
@@ -171,42 +169,4 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }*/
-    
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (gameObject != null)
-        {
-            if (other.gameObject.CompareTag("Enemy") && !_enemies.Contains(other.gameObject))
-            {
-                _enemies.Add(other.gameObject);
-                Debug.Log("Enemy added: " + other.gameObject.name);
-            }
-
-            if (other.gameObject.CompareTag("Projectile") && !_projectiles.Contains(other.gameObject))
-            {
-                _projectiles.Add(other.gameObject);
-                Debug.Log("Projectile added: " + other.gameObject.name);
-            }
-        }
-    }
-    
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (gameObject != null)
-        {
-            if (other.gameObject.CompareTag("Enemy") && _enemies.Contains(other.gameObject))
-            {
-                _enemies.Remove(other.gameObject);
-                GetComponentInChildren<Shooter>()._wait = true;
-                Debug.Log("Enemy removed: " + other.gameObject.name);
-            }
-
-            if (other.gameObject.CompareTag("Projectile") && !_projectiles.Contains(other.gameObject))
-            {
-                _projectiles.Remove(other.gameObject);
-                Destroy(other.gameObject);
-                Debug.Log("Projectile removed: " + other.gameObject.name);
-            }
-        }
-    }
 }

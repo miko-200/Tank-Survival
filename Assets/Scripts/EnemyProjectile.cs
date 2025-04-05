@@ -1,16 +1,12 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
-public class Projectile : MonoBehaviour
+public class EnemyProjectile : MonoBehaviour
 {
-    public GameObject Player;
-    public PlayerStats pStatsS;
-    public float speed = 10f;
+    public GameObject Enemy;
+    public EnemyStats eStatsS;
+    public float speed = 8f;
 
     public void Init()
     {
@@ -19,12 +15,11 @@ public class Projectile : MonoBehaviour
     }
     private void Start()
     {
-        Player = GameObject.FindGameObjectWithTag("Player");
-        pStatsS = Player.GetComponent<PlayerStats>();
+        eStatsS = Enemy.GetComponentInParent<EnemyStats>();
 
         GetComponent<Rigidbody2D>().velocity = transform.up * speed;
         //GetComponent<Rigidbody2D>().AddForce(transform.right * speed);
-        Destroy(gameObject, pStatsS.bulletLifeTime);
+        Destroy(gameObject, eStatsS.bulletLifeTime);
     }
 
     private void Update()
@@ -39,10 +34,10 @@ public class Projectile : MonoBehaviour
     {
         Debug.Log("Trigger entered with: " + other.gameObject.name);
 
-        if (other.gameObject.GetComponent<EnemyStats>())
+        if (other.gameObject.CompareTag("Player"))
         {
             Debug.Log("Damaging enemy: " + other.gameObject.name);
-            other.gameObject.GetComponent<EnemyStats>().Damage(pStatsS.damage);
+            other.gameObject.GetComponent<PlayerMovement>().Damage(eStatsS.damage);
 
             Destroy(gameObject);  // Destroy the projectile on trigger hit
         }

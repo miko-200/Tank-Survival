@@ -18,7 +18,7 @@ public class PlayerStats : MonoBehaviour
     public TextMeshProUGUI BulDurText;
     
     public float healthMaxDefault = 10f;
-    public float healthRegenDefault = 1;
+    public float healthRegenDefault = 0.1f;
     [HideInInspector]public bool _isRegenerating = false;
     
     public float damageDefault = 1f;
@@ -27,19 +27,18 @@ public class PlayerStats : MonoBehaviour
     public float rangeDefault = 6f;
     public float fireRateDefault = 1f;
     public float bulletLifeTimeDefault = 0.6f;
+    public int level = 1;
+    public float xpToNextLevel = 5;
     
     [HideInInspector]public float healthMax = 1;
     [HideInInspector]public float health = 1;
-    [HideInInspector]public float healthRegen = 1;
+    [HideInInspector]public float healthRegen = 0.1f;
     [HideInInspector]public float damage = 1f;
     [HideInInspector]public float bodyDamage = 1f;
     [HideInInspector]public float speed = 1;
     [HideInInspector]public float range = 1f;
     [HideInInspector]public float firerate = 1f;
     [HideInInspector]public float bulletLifeTime;
-    
-
-    //private GameObject enemy;
 
     private void Start()
     {
@@ -54,10 +53,10 @@ public class PlayerStats : MonoBehaviour
         speed = speedDefault * multipliersScript.moveSpeedMultiplier;
         range = rangeDefault;
         firerate = fireRateDefault / multipliersScript.fireRateMultiplier;
-        bulletLifeTime = bulletLifeTimeDefault + multipliersScript.bulletLifeTime;
+        bulletLifeTime = bulletLifeTimeDefault * multipliersScript.bulletLifeTime;
         
         
-        HPMaxText.text = healthMaxDefault.ToString();
+        HPMaxText.text = healthMax.ToString();
         HPText.text = health.ToString();
         HRText.text = healthRegen.ToString();
         DMGText.text = damage.ToString();
@@ -97,9 +96,9 @@ public class PlayerStats : MonoBehaviour
         damage = damageDefault * multipliersScript.damageMultiplier;
         speed = speedDefault * multipliersScript.moveSpeedMultiplier;
         firerate = fireRateDefault / multipliersScript.fireRateMultiplier;
-        bulletLifeTime = bulletLifeTimeDefault + multipliersScript.bulletLifeTime;
+        bulletLifeTime = bulletLifeTimeDefault * multipliersScript.bulletLifeTime;
         
-        HPMaxText.text = Math.Round(healthMaxDefault, 2).ToString();
+        HPMaxText.text = Math.Round(healthMax, 2).ToString();
         HRText.text = Math.Round(healthRegen, 2).ToString();
         DMGText.text = Math.Round(damage, 2).ToString();
         DMGMulText.text = multipliersScript.damageMultiplier.ToString();

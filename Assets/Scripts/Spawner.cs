@@ -21,7 +21,12 @@ public class Spawner : MonoBehaviour
     private float angle1 = 0f;
     private float angle2 = 360f;
     private Coroutine spawnRoutine;
-
+    
+    public float mapMinX = -225f;
+    public float mapMaxX = 225f;
+    public float mapMinY = -225f;
+    public float mapMaxY = 225f;
+    public float spawnMargin = 1f;
 
     private void Start()
     {
@@ -31,25 +36,16 @@ public class Spawner : MonoBehaviour
     private void BulkSpawn()
     {
         center = CenterObject.transform.position;
-        angle1 = Random.Range(0f, 330f); 
+        angle1 = Random.Range(0f, 330f);
         angle2 = angle1 + 30f;
-        for (int i = 0; i < bulkSpawnCount; i++) 
-        {
-            float angle = Random.Range(angle1, angle2); // Random angle in degrees
-            float radius = Random.Range(minRadius, maxRadius); // Random distance within range
 
-            Vector2 spawnPosition = center + new Vector2(
-                Mathf.Cos(angle * Mathf.Deg2Rad) * radius,
-                Mathf.Sin(angle * Mathf.Deg2Rad) * radius
-            );
-            GameObject newEnemy = Instantiate(enemy, spawnPosition, Quaternion.identity);
-            Enemy newEnemyScript = newEnemy.GetComponent<Enemy>();
-            newEnemyScript.xpAmount = EnemyUpgrades.GetComponent<Timer>().xpAmount;
-            newEnemyScript.health = EnemyUpgrades.GetComponent<Timer>().health;
-            newEnemyScript.damage = EnemyUpgrades.GetComponent<Timer>().damage;
-            spawnCount++;
+        for (int i = 0; i < bulkSpawnCount; i++)
+        {
+            Vector2 spawnPosition = GetValidSpawnPosition(angle1, angle2);
+            SpawnEnemyAt(spawnPosition);
         }
     }
+
     private void RandomBulkSpawn()
     {
         center = CenterObject.transform.position;
@@ -57,45 +53,65 @@ public class Spawner : MonoBehaviour
         {
             angle1 = Random.Range(0f, 330f);
             angle2 = angle1 + 30f;
-        
-            float angle = Random.Range(angle1, angle2); // Random angle in degrees
-            float radius = Random.Range(minRadius, maxRadius); // Random distance within range
-
-            Vector2 spawnPosition = center + new Vector2(
-                Mathf.Cos(angle * Mathf.Deg2Rad) * radius,
-                Mathf.Sin(angle * Mathf.Deg2Rad) * radius
-            );
-            GameObject newEnemy = Instantiate(enemy, spawnPosition, Quaternion.identity);
-            Enemy newEnemyScript = newEnemy.GetComponent<Enemy>();
-            newEnemyScript.xpAmount = timer.xpAmount;
-            newEnemyScript.health = timer.health;
-            newEnemyScript.damage = timer.damage;
-            spawnCount++;
+            
+            Vector2 spawnPosition = GetValidSpawnPosition(angle1, angle2);
+            SpawnEnemyAt(spawnPosition);
         }
     }
+
     private void Spawn()
     {
         center = CenterObject.transform.position;
-        float angle = Random.Range(0f, 360f); // Random angle in degrees
-        float radius = Random.Range(minRadius, maxRadius); // Random distance within range
+        float angle = Random.Range(0f, 360f);
+        Vector2 spawnPosition = GetValidSpawnPosition(angle, angle);
+        SpawnEnemyAt(spawnPosition);
+    }
 
-        Vector2 spawnPosition = center + new Vector2(
-            Mathf.Cos(angle * Mathf.Deg2Rad) * radius,
-            Mathf.Sin(angle * Mathf.Deg2Rad) * radius
-        );
+    private Vector2 GetValidSpawnPosition(float angleStart, float angleEnd)
+    {
+        int maxTries = 10;
+        int tries = 0;
+        Vector2 spawnPosition = Vector2.zero;
+
+        do
+        {
+            float angle = Random.Range(angleStart, angleEnd);
+            float radius = Random.Range(minRadius, maxRadius);
+
+            spawnPosition = center + new Vector2(
+                Mathf.Cos(angle * Mathf.Deg2Rad) * radius,
+                Mathf.Sin(angle * Mathf.Deg2Rad) * radius
+            );
+
+            // Clamp to keep inside bounds
+            spawnPosition.x = Mathf.Clamp(spawnPosition.x, mapMinX + spawnMargin, mapMaxX - spawnMargin);
+            spawnPosition.y = Mathf.Clamp(spawnPosition.y, mapMinY + spawnMargin, mapMaxY - spawnMargin);
+
+            tries++;
+
+        } while (tries < maxTries && (spawnPosition.x < mapMinX || spawnPosition.x > mapMaxX || 
+                                      spawnPosition.y < mapMinY || spawnPosition.y > mapMaxY));
+
+        return spawnPosition;
+    }
+
+    private void SpawnEnemyAt(Vector2 spawnPosition)
+    {
         GameObject newEnemy = Instantiate(enemy, spawnPosition, Quaternion.identity);
-        Enemy newEnemyScript = newEnemy.GetComponent<Enemy>();
-        newEnemyScript.xpAmount = timer.xpAmount;
-        newEnemyScript.health = timer.health;
-        newEnemyScript.damage = timer.damage;
+        EnemyStats newEnemyStatsScript = newEnemy.GetComponent<EnemyStats>();
+        newEnemyStatsScript.xpAmount = timer.xpAmount;
+        newEnemyStatsScript.health = timer.health;
+        newEnemyStatsScript.damage = timer.damage;
         spawnCount++;
+        
+        newEnemy.GetComponent<EnemyMovement>().spawner = this.gameObject;
     }
 
     public void StartSpawning()
     {
         if (spawnRoutine != null)
         {
-            StopCoroutine(spawnRoutine); // Stop old coroutine if running
+            StopCoroutine(spawnRoutine);
         }
         spawnRoutine = StartCoroutine(SpawnEnemies());
     }
